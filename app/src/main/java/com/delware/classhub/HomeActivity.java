@@ -1,13 +1,17 @@
 package com.delware.classhub;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.support.constraint.ConstraintLayout;
+import android.support.percent.PercentRelativeLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,12 +40,29 @@ public class HomeActivity extends AppCompatActivity {
     private MonthLoader.MonthChangeListener m_monthChangeListener;
 
     //needed for when pressing the add class button
-    private EditText m_inputForAddClassButtonDialogMenu;
-    private AlertDialog m_alertDialogForAddClassButton;
+    private Dialog m_dialogForAddClassButton;
+    private Dialog m_alertDialogForLongPressingAClass;
+
+    private LongClickedClass m_longClickedClass;
+    private ArrayAdapter<String> m_classesListViewAdapter;
+
+    //pull the classes from the database and put the into a string array
+    private ArrayList<String> m_classes;
+
+    private final Context m_activityContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        m_longClickedClass = new LongClickedClass();
+        m_classes = new ArrayList<String>();
+
+        //pull these classes information from the database
+        m_classes.add("Class1");
+        m_classes.add("Class2");
+        m_classes.add("Class3");
+        m_classes.add("Class4");
 
         //I am going to overwrite the action bar for this activity
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -51,32 +71,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         initializeWeekViewActions();
-
+        createAddClassOnClickDialog();
+        registerContextMenuForAddClassButton();
         setClassListViewContent();
-        createContextMenu();
-        createInputDialogBox();
-    }
-
-    private void setClassListViewContent()
-    {
-        //pull the classes from the database and put the into a string array
-        String[] classes = {"Class1", "Class2", "Class3", "Class4"};
-
-        ListAdapter listViewAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, classes);
-        ListView classesListView = (ListView) findViewById(R.id.classesListView);
-        classesListView.setAdapter(listViewAdapter);
-
-        //set the click stuff
-        classesListView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //gets the value of the
-                        String className = String.valueOf(parent.getItemAtPosition(position));
-                        Toast.makeText(getApplicationContext(),className, Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
+        createDialogBoxForLongPressingAClass();
     }
 
     private void initializeWeekViewActions() {
@@ -150,8 +148,108 @@ public class HomeActivity extends AppCompatActivity {
         m_weekView.setEmptyViewClickListener(m_emptyViewClickListener);
     }
 
-    /***************************Context Menu For Add Class Button *****************************************/
-    private void createContextMenu()
+    private void createAddClassOnClickDialog()
+    {
+        final Dialog dialog = new Dialog(m_activityContext);
+        dialog.setContentView(R.layout.activity_home_add_class_dialog);
+
+        final EditText renameClassEditText = (EditText) dialog.findViewById(R.id.addClassInput);
+        final Button doneButton = (Button) dialog.findViewById(R.id.addClassDoneButton);
+        final Button cancelButton = (Button) dialog.findViewById(R.id.addClassCancelButton);
+
+        //done button is only available to show when there is information inputted into
+        //the edit text associated with the dialog box
+        renameClassEditText.addTextChangedListener(new TextWatcher() {
+            //start off as a disabled done button
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            //enabled done button if a class name was entered
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String input = s.toString();
+
+                //not all whitespace or empty
+                if (input.trim().length() > 0)
+                    doneButton.setEnabled(true);
+                else
+                    doneButton.setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String className = renameClassEditText.getText().toString();
+
+                m_classes.add(className);
+                m_classesListViewAdapter.notifyDataSetChanged();
+
+                Toast.makeText(getApplicationContext(), "Added: " + className, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                renameClassEditText.setText("");
+            }
+        });
+
+        //dismiss dialog when cancel is pressed
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                renameClassEditText.setText("");
+            }
+        });
+
+        //create the dialog
+        m_dialogForAddClassButton = dialog;
+    }
+
+    private void setClassListViewContent()
+    {
+        m_classesListViewAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, m_classes);
+        ListView classesListView = (ListView) findViewById(R.id.classesListView);
+        classesListView.setAdapter(m_classesListViewAdapter);
+
+        //set the click stuff
+        classesListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        //gets the value of the
+                        String className = String.valueOf(parent.getItemAtPosition(position));
+                        Toast.makeText(getApplicationContext(),className, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        //long press button
+        classesListView.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        displayLongPressedClassDialogBox(view);
+
+                        //remember the last class that was long clicked
+                        m_longClickedClass.parent = parent;
+                        m_longClickedClass.view = view;
+                        m_longClickedClass.position = position;
+                        m_longClickedClass.id = id;
+
+                        //idk what to return
+                        return true;
+                    }
+                }
+        );
+
+    }
+
+    private void registerContextMenuForAddClassButton()
     {
         //below is information for the context menu on long presses
         //access the button
@@ -181,62 +279,146 @@ public class HomeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //gets the layout of the main activity
-        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.homeActivityMainConstraintView);
+        PercentRelativeLayout layout = (PercentRelativeLayout) findViewById(R.id.homeActivityMainPercentRelativeLayout);
 
         switch (id)
         {
             //just changes background color right now, will change so it will do the functionality
             //of the archive class and delete class
-            case R.id.archiveClass:
+            case R.id.retrieveArchivedClasses:
+                Toast.makeText(getApplicationContext(), "Retrieving Archived Classes..." , Toast.LENGTH_SHORT).show();
                 layout.setBackgroundColor(Color.GREEN);
                 break;
-            case R.id.deleteClass:
-                layout.setBackgroundColor(Color.RED);
+            case R.id.addClassContextMenuCancelButton:
+                closeContextMenu();
                 break;
         }
         return super.onContextItemSelected(item);
     }
 
-    /***************************Dialog Box Stuff*****************************************/
-    private void createInputDialogBox()
+    private void createDialogBoxForLongPressingAClass()
     {
-        //below is information for the change name menu
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        //title of the dialog
-        alertDialogBuilder.setTitle("Please Enter the Class Name");
-        //Message below the title
-        //alertDialogBuilder.setMessage("Please Enter the Class Name");
+        final Dialog dialog = new Dialog(m_activityContext);
+        dialog.setContentView(R.layout.activity_home_class_dialog);
 
-        m_inputForAddClassButtonDialogMenu = new EditText(this);
-        alertDialogBuilder.setView(m_inputForAddClassButtonDialogMenu);
+        //configure actions of the dialog box
+        final EditText inputEditText = (EditText) dialog.findViewById(R.id.renameClassInput);
+        final Button doneButton = (Button) dialog.findViewById(R.id.classDoneButton);
+        final Button cancelButton = (Button) dialog.findViewById(R.id.classCancelButton);
+        final Button deleteClassButton = (Button) dialog.findViewById(R.id.deleteClassButton);
+        final Button archiveClassButton = (Button) dialog.findViewById(R.id.archiveClassButton);
 
-        //set done button
-        alertDialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+        //done button is only available to show when there is information inputted into
+        //the edit text associated with the dialog box
+        inputEditText.addTextChangedListener(new TextWatcher() {
+            //start off as a disabled done button
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String className = m_inputForAddClassButtonDialogMenu.getText().toString();
-                Toast.makeText(getApplicationContext(), "Added Class: " + className, Toast.LENGTH_SHORT).show();
-                m_inputForAddClassButtonDialogMenu.setText("");
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            //enabled done button if a class name was entered
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String input = s.toString();
+
+                //not all whitespace or empty
+                if (input.trim().length() > 0)
+                    doneButton.setEnabled(true);
+                else
+                    doneButton.setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
-        //set cancel button
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        deleteClassButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ///dialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Canceled", Toast.LENGTH_SHORT).show();
-                m_inputForAddClassButtonDialogMenu.setText("");
+            public void onClick(View v) {
+                dialog.dismiss();
+                createAlertDialogForConfirmation("Are you sure you want to delete the class: " + m_classes.get(m_longClickedClass.position) + "?");
             }
         });
 
-        //create the dialog
-        m_alertDialogForAddClassButton = alertDialogBuilder.create();
+        archiveClassButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //delete the class from the listView
+
+                String className = m_classes.get(m_longClickedClass.position);
+                m_classes.remove(m_longClickedClass.position);
+                m_classesListViewAdapter.notifyDataSetChanged();
+
+                //send the message
+                Toast.makeText(getApplicationContext(), className + " was archived!" , Toast.LENGTH_SHORT).show();
+
+                //make the dialog box disappear
+                dialog.dismiss();
+            }
+        });
+
+        //rename the list view item when done button is pressed
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //this particular class was long clicked, update with the value inputted into the edit text
+                m_classes.set(m_longClickedClass.position, inputEditText.getText().toString());
+
+                m_classesListViewAdapter.notifyDataSetChanged();
+
+                dialog.dismiss();
+
+                inputEditText.setText("");
+            }
+        });
+
+        //dismiss dialog when cancel is pressed
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                inputEditText.setText("");
+            }
+        });
+
+        m_alertDialogForLongPressingAClass  = dialog;
+    }
+
+    public void createAlertDialogForConfirmation(String message)
+    {
+        //simple alert dialog for confimation
+        new AlertDialog.Builder(this)
+                .setTitle("Wait...")
+                .setMessage(message)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //DELETE THE CLASS FROM THE APP
+                        //remove it from the list view
+                        m_classes.remove(m_longClickedClass.position);
+                        m_classesListViewAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //bring up the dialog box again
+                        displayLongPressedClassDialogBox(null);
+                    }
+                }).show();
+    }
+
+    //shows the created dialog box when a certain button is clicked
+    public void displayLongPressedClassDialogBox(View v)
+    {
+        m_alertDialogForLongPressingAClass.show();
     }
 
     //shows the created dialog box when a certain button is clicked
     public void displayAddClassDialogBox(View v)
     {
-        m_alertDialogForAddClassButton.show();
+        m_dialogForAddClassButton.show();
     }
 }
