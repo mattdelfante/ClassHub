@@ -3,6 +3,7 @@ package com.delware.classhub;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.support.percent.PercentRelativeLayout;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alamkanak.weekview.MonthLoader;
@@ -221,9 +224,14 @@ public class HomeActivity extends AppCompatActivity {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //gets the value of the
+                        //gets the class name from the list view and store it in the singleton
                         String className = String.valueOf(parent.getItemAtPosition(position));
-                        Toast.makeText(getApplicationContext(),className, Toast.LENGTH_SHORT).show();
+                        SingletonValues.getInstance().setSelectedClassName(className);
+
+                        //Go to the ClassActivity
+                        Intent intent = new Intent(HomeActivity.this, ClassActivity.class);
+                        intent.putExtra("className", className);
+                        startActivity(intent);
                     }
                 }
         );
