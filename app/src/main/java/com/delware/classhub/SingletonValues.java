@@ -6,8 +6,9 @@ package com.delware.classhub;
 
 public class SingletonValues {
     private static SingletonValues instance = null;
-    private SingletonValues(){}
     private String selectedClassName;
+
+    private SingletonValues(){}
 
     public static SingletonValues getInstance()
     {
@@ -20,11 +21,12 @@ public class SingletonValues {
 
     public void setSelectedClassName (String name)
     {
-        instance.selectedClassName = name;
+        selectedClassName = name;
     }
 
     public String getSelectedClassName()
     {
-        return instance.selectedClassName;
+        return selectedClassName;
     }
+
 }

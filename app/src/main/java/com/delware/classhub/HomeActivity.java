@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -36,11 +37,9 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     //needed for the Week calendar
-    private WeekView m_weekView;
-    private List<WeekViewEvent> m_allAssignments;
-    private WeekView.EventClickListener m_eventClickListener;
-    private WeekView.EmptyViewClickListener m_emptyViewClickListener;
-    private MonthLoader.MonthChangeListener m_monthChangeListener;
+//    private WeekView.EventClickListener m_eventClickListener;
+//    private WeekView.EmptyViewClickListener m_emptyViewClickListener;
+//    private MonthLoader.MonthChangeListener m_monthChangeListener;
 
     //needed for when pressing the add class button
     private Dialog m_dialogForAddClassButton;
@@ -81,11 +80,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initializeWeekViewActions() {
-
-        m_allAssignments = new ArrayList<WeekViewEvent>();
-
         //action when clicking on an existing homework assignment
-        m_eventClickListener = new WeekView.EventClickListener() {
+        WeekView.EventClickListener eventClickListener = new WeekView.EventClickListener() {
             @Override
             public void onEventClick(WeekViewEvent event, RectF eventRect) {
                 Toast.makeText(getApplicationContext(), "Clicked Hw problem", Toast.LENGTH_SHORT).show();
@@ -93,62 +89,47 @@ public class HomeActivity extends AppCompatActivity {
         };
 
         //action when clicking empty date in the calendar
-        m_emptyViewClickListener = new WeekView.EmptyViewClickListener() {
+        WeekView.EmptyViewClickListener emptyViewClickListener = new WeekView.EmptyViewClickListener() {
             @Override
             public void onEmptyViewClicked(Calendar time) {
 
-//            //ADDS AN EVENT TO JULY 25th WHEN CLICKING ON AN EMPTY SPOT IN THE CALENDAR
-//            //THIS LOGIC CAN BE USED TO ADD CALENDAR ASSIGNMENTS THROUGHOUT THE APP
-//            Calendar startTime = Calendar.getInstance();
-//            startTime.set(Calendar.HOUR_OF_DAY, 3);
-//            startTime.set(Calendar.MINUTE, 0);
-//            startTime.set(Calendar.MONTH, 6);
-//            startTime.set(Calendar.YEAR, 2017);
-//            Calendar endTime = (Calendar) startTime.clone();
-//            endTime.add(Calendar.HOUR, 1);
-//            endTime.set(Calendar.MONTH, 6);
-//
-//            WeekViewEvent event = new WeekViewEvent(1, "tempHwAssignment", startTime, endTime);
-//            event.setColor(getResources().getColor(R.color.DeepPink));
-//
-//            m_allAssignments.add(event);
-//
-//            //Refreshses event
-//            m_weekView.notifyDatasetChanged();
-
-                Toast.makeText(getApplicationContext(), "Clicked Nothing", Toast.LENGTH_SHORT).show();
             }
         };
 
         //action that populates the calendar with homework assignments
-        m_monthChangeListener = new MonthLoader.MonthChangeListener() {
+        MonthLoader.MonthChangeListener monthChangeListener = new MonthLoader.MonthChangeListener() {
             @Override
             public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
-
                 List<WeekViewEvent> returnVal = new ArrayList<WeekViewEvent>();
                 java.util.Date date = new Date();
 
                 //only show the current year's information
-                for (WeekViewEvent event : m_allAssignments)
+                for (WeekViewEvent event : SingletonWeekView.getInstance().getEvents())
                 {
-                    //WeekView have January start on Month 1 where WeekView has
+                    //WeekView has January start on Month 1 where WeekView has
                     //January start on 0. That is why there is the + 1 for the java date
                     if (newMonth == date.getMonth() + 1)
                     {
                         returnVal.add(event);
                     }
                 }
+
                 return returnVal;
             }
         };
 
         // Get a reference for the week view in the layout.
-        m_weekView = (WeekView) findViewById(R.id.weekView);
+        WeekView weekView = (WeekView) findViewById(R.id.weekView);
+
+        //store the weekview calendar into the singleton
+
+        if (SingletonWeekView.getInstance().getWeekView() == null)
+            SingletonWeekView.getInstance().setWeekView(weekView);
 
         //set the events that were defined above
-        m_weekView.setOnEventClickListener(m_eventClickListener);
-        m_weekView.setMonthChangeListener(m_monthChangeListener);
-        m_weekView.setEmptyViewClickListener(m_emptyViewClickListener);
+        weekView.setOnEventClickListener(eventClickListener);
+        weekView.setMonthChangeListener(monthChangeListener);
+        weekView.setEmptyViewClickListener(emptyViewClickListener);
     }
 
     private void createAddClassOnClickDialog()
@@ -226,11 +207,13 @@ public class HomeActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         //gets the class name from the list view and store it in the singleton
                         String className = String.valueOf(parent.getItemAtPosition(position));
+
+                        //At this point pull information from the database based on the class name
+                        //and populate the singleton with all those values
                         SingletonValues.getInstance().setSelectedClassName(className);
 
                         //Go to the ClassActivity
                         Intent intent = new Intent(HomeActivity.this, ClassActivity.class);
-                        intent.putExtra("className", className);
                         startActivity(intent);
                     }
                 }
