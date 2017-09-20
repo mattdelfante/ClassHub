@@ -1,4 +1,4 @@
-package com.delware.classhub;
+package com.delware.classhub.Activities;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -12,22 +12,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekViewEvent;
+import com.delware.classhub.DatabaseObjs.AssignmentModel;
+import com.delware.classhub.R;
+import com.delware.classhub.Singletons.SingletonSelectedClass;
+import com.delware.classhub.Singletons.SingletonWeekView;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class ClassActivity extends AppCompatActivity {
 
@@ -46,7 +44,7 @@ public class ClassActivity extends AppCompatActivity {
 
         //get the name of the class at make that the title of the page
         TextView actionBarTextView = (TextView) findViewById(R.id.classActivityActionBarTitle);
-        actionBarTextView.setText(SingletonValues.getInstance().getSelectedClassName());
+        actionBarTextView.setText(SingletonSelectedClass.getInstance().getSelectedClass().name);
 
         createAddAssignmentOnClickDialog();
     }
@@ -63,7 +61,8 @@ public class ClassActivity extends AppCompatActivity {
         final Button cancelButton = (Button) dialog.findViewById(R.id.classCancelButton);
         final Button doneButton = (Button) dialog.findViewById(R.id.classDoneButton);
 
-        final Assignment newAssignment = new Assignment();
+        final AssignmentModel newAssignment = new AssignmentModel();
+        newAssignment.associatedClass = SingletonSelectedClass.getInstance().getSelectedClass();
 
         //assignment name input stuff
         asgnmtNameInput.addTextChangedListener(new TextWatcher() {
@@ -83,14 +82,14 @@ public class ClassActivity extends AppCompatActivity {
                 //not all whitespace or empty
                 if (input.trim().length() > 0)
                 {
-                    newAssignment.setName(input);
+                    newAssignment.name = input;
 
                     if (isValidAssignment(newAssignment))
                         doneButton.setEnabled(true);
                 }
                 else
                 {
-                    newAssignment.setName(null);
+                    newAssignment.name = null;
                     doneButton.setEnabled(false);
                 }
             }
@@ -113,7 +112,7 @@ public class ClassActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.MINUTE, selectedMinute);
 
                         //Now the assignments date is properly set
-                        newAssignment.setDueDate(myCalendar);
+                        newAssignment.dueDate = myCalendar.getTime();
 
                         if (isValidAssignment(newAssignment))
                             doneButton.setEnabled(true);
@@ -152,7 +151,7 @@ public class ClassActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //index 0 is priority level 1, so add 1 to the index to get the correct priority level
-                        newAssignment.setPriorityLevel(which + 1);
+                        newAssignment.priorityLevel = which + 1;
                     }
                 })
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
@@ -163,7 +162,7 @@ public class ClassActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //goes back to Priority Level One
-                        newAssignment.setPriorityLevel(1);
+                        newAssignment.priorityLevel = 1;
                     }
                 });
 
@@ -195,9 +194,9 @@ public class ClassActivity extends AppCompatActivity {
                 String input = s.toString();
                 //not all whitespace or empty
                 if (input.trim().length() > 0)
-                    newAssignment.setNotes(input);
+                    newAssignment.additionalNotes = input;
                 else
-                    newAssignment.setNotes("");
+                    newAssignment.additionalNotes = null;
             }
 
             @Override
@@ -220,39 +219,13 @@ public class ClassActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar endTime = (Calendar) newAssignment.getDueDate().clone();
-                endTime.add(Calendar.HOUR, 1);
+                //ADD TO THE VIEW ASSIGNMENTS PAGE
 
-                //add the assignment to the calendar
-                WeekViewEvent assignment = new WeekViewEvent(SingletonWeekView.getInstance().getEvents().size() + 1,
-                        newAssignment.getName(), newAssignment.getDueDate(), endTime);
-
-                //assignment shows up as different colors dependent on
-                //priority level
-                switch (newAssignment.getPriorityLevel())
-                {
-                    case 1:
-                        assignment.setColor(Color.BLUE);
-                        break;
-                    case 2:
-                        assignment.setColor(Color.YELLOW);
-                        break;
-                    case 3:
-                        assignment.setColor(Color.RED);
-                        break;
-                    default:
-                        assignment.setColor(Color.BLUE);
-                        break;
-                }
-
-                SingletonWeekView.getInstance().getEvents().add(assignment);
+                //add the assignment to the database
+                newAssignment.save();
                 SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
-                //Reset the activity while making the transition seamless
-                finish();
-                overridePendingTransition(0, 0);
-                startActivity(getIntent());
-                overridePendingTransition(0, 0);
+                dialog.dismiss();
             }
         });
 
@@ -260,10 +233,13 @@ public class ClassActivity extends AppCompatActivity {
         m_addAssignmentDialog = dialog;
     }
 
-    private Boolean isValidAssignment(Assignment a)
+    private Boolean isValidAssignment(AssignmentModel a)
     {
-        return a.getName() != null && a.getDueDate() != null;
+        return a.name != null && a.dueDate != null;
     }
 
-    public void showAddAssignmentDialog(View v) {m_addAssignmentDialog.show();}
+    public void showAddAssignmentDialog(View v)
+    {
+        m_addAssignmentDialog.show();
+    }
 }

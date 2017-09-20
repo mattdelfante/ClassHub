@@ -1,4 +1,4 @@
-package com.delware.classhub;
+package com.delware.classhub.Pojos;
 
 import android.view.View;
 import android.widget.AdapterView;

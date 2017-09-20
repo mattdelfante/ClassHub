@@ -6,7 +6,7 @@
     android:id="@+id/activityClassAddDialog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.delware.classhub.HomeActivity">
+    tools:context="com.delware.classhub.Activities.HomeActivity">
 
     <TextView
         android:layout_width="wrap_content"

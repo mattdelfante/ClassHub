@@ -1,4 +1,4 @@
-package com.delware.classhub;
+package com.delware.classhub.Singletons;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
@@ -11,13 +11,9 @@ import java.util.ArrayList;
 
 public class SingletonWeekView {
     private static SingletonWeekView instance = null;
-    private ArrayList<WeekViewEvent> m_events;
     private WeekView m_cal = null;
 
-    private SingletonWeekView()
-    {
-        m_events = new ArrayList<WeekViewEvent>();
-    }
+    private SingletonWeekView() {}
 
     public static SingletonWeekView getInstance()
     {
@@ -35,10 +31,5 @@ public class SingletonWeekView {
     public WeekView getWeekView()
     {
         return m_cal;
-    }
-
-    public  ArrayList<WeekViewEvent> getEvents()
-    {
-        return m_events;
     }
 }

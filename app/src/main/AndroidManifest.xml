@@ -8,15 +8,22 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".HomeActivity">
+        android:theme="@style/AppTheme"
+        android:name="com.activeandroid.app.Application">
+
+        <meta-data android:name="AA_DB_NAME" android:value="ClassHubDB.db" />
+        <meta-data android:name="AA_DB_VERSION" android:value="1" />
+        <meta-data android:name="AA_MODELS" android:value="com.delware.classhub.DatabaseObjs.ClassModel, com.delware.classhub.DatabaseObjs.AssignmentModel" />
+        <meta-data android:name="AA_SERIALIZERS" android:value="com.delware.classhub.DatabaseTypeSerializers.UtilDateSerializer"/>
+
+        <activity android:name=".Activities.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ClassActivity"></activity>
+        <activity android:name=".Activities.ClassActivity"></activity>
     </application>
 
 </manifest>
