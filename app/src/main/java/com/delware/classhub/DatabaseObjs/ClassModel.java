@@ -50,6 +50,16 @@ public class ClassModel extends Model
 
     public static void deleteClass(String className)
     {
+        ClassModel classModel = getClass(className);
+        List<AssignmentModel> assignments = classModel.getAssignments();
+
+        //delete all of the assignments associated with a class
+        for (AssignmentModel model : assignments)
+        {
+            new Delete().from(AssignmentModel.class).where("Name = ?", model.name).execute();
+        }
+
+        //delete the class
         new Delete().from(ClassModel.class).where("Name = ?", className).execute();
     }
 

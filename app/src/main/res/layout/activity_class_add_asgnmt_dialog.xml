@@ -40,7 +40,7 @@
         android:id="@+id/priorityLevelButton"
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
-        android:text="Assign Priority Level"
+        android:text="Add Priority Level"
         android:textAllCaps="false"
         android:layout_below="@+id/addDueDateButton"
         android:layout_alignParentLeft="true"

@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.alamkanak.weekview.WeekViewEvent;
 import com.delware.classhub.DatabaseObjs.AssignmentModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
@@ -32,11 +30,15 @@ public class ClassActivity extends AppCompatActivity {
     private Context m_activityContext = this;
     private Dialog m_addAssignmentDialog;
 
+    /**
+     * Creates everything needed for the ClassActivity
+     * @param savedInstanceState the state of the application
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //I am going to overwrite the action bar for this activity
+        //overwrite the action bar for this activity with a different one
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.activity_class_action_bar);
 
@@ -49,6 +51,9 @@ public class ClassActivity extends AppCompatActivity {
         createAddAssignmentOnClickDialog();
     }
 
+    /**
+     * Creates the logic for what happens when clicking the Add Assignment button.
+     */
     private void createAddAssignmentOnClickDialog()
     {
         final Dialog dialog = new Dialog(m_activityContext);
@@ -64,15 +69,14 @@ public class ClassActivity extends AppCompatActivity {
         final AssignmentModel newAssignment = new AssignmentModel();
         newAssignment.associatedClass = SingletonSelectedClass.getInstance().getSelectedClass();
 
-        //assignment name input stuff
+        //assignment name input logic
         asgnmtNameInput.addTextChangedListener(new TextWatcher() {
             //start off as a disabled done button
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s)
@@ -94,17 +98,19 @@ public class ClassActivity extends AppCompatActivity {
                 }
             }
         });
-        //assignment name input stuff
 
-        //date stuff
+        //Due date logic
         final Calendar myCalendar = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                //set the date that the assginment is due
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
+                //after the date is selected, allow the user to pick the time that the assignment is due
                 TimePickerDialog tpd = new TimePickerDialog(m_activityContext, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
@@ -124,6 +130,7 @@ public class ClassActivity extends AppCompatActivity {
 
         };
 
+        //display the calendar date picker when clicking the due date button
         dueDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,9 +140,8 @@ public class ClassActivity extends AppCompatActivity {
                 dpd.show();
             }
         });
-        //date stuff
 
-        //priority level stuff
+        //priority level logic
         priorityLevelButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -171,7 +177,7 @@ public class ClassActivity extends AppCompatActivity {
         });
         //priority level stuff
 
-        //notes stuff
+        //notes logic
         //if click on the edit text and have the default text in it, clear it out
         notesInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -225,7 +231,11 @@ public class ClassActivity extends AppCompatActivity {
                 newAssignment.save();
                 SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
-                dialog.dismiss();
+                //Reset the activity while making the transition seamless
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -233,11 +243,21 @@ public class ClassActivity extends AppCompatActivity {
         m_addAssignmentDialog = dialog;
     }
 
+    /**
+     * Determines weather or not the assignment is a valid assignment. An assignment is
+     * valid if it has a name and a due date.
+     * @param a The current assignment.
+     * @return True if a valid assignment false if not.
+     */
     private Boolean isValidAssignment(AssignmentModel a)
     {
         return a.name != null && a.dueDate != null;
     }
 
+    /**
+     * Displays the Add Assignment dialog
+     * @param v the current view
+     */
     public void showAddAssignmentDialog(View v)
     {
         m_addAssignmentDialog.show();

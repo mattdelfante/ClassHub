@@ -62,6 +62,9 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //deletes the database, do this if you need to reset the schema or anything
+        //this.deleteDatabase("ClassHubDB");
+
         //initialize the database
         ActiveAndroid.initialize(this);
 
@@ -166,7 +169,13 @@ public class HomeActivity extends AppCompatActivity
         weekView.setEmptyViewClickListener(emptyViewClickListener);
     }
 
-    private WeekViewEvent createWeekViewEvent(int numAssignments, AssignmentModel asgnmt)
+    /**
+     * Creates a weekview event that corresponds to a class's assignment
+     * @param eventId the id of the weekview event
+     * @param asgnmt the assignment that the event is being created for
+     * @return the weekview event for an assignment
+     */
+    private WeekViewEvent createWeekViewEvent(int eventId, AssignmentModel asgnmt)
     {
         Calendar startTime = Calendar.getInstance();
         startTime.setTime(asgnmt.dueDate);
@@ -175,7 +184,7 @@ public class HomeActivity extends AppCompatActivity
         endTime.setTime(asgnmt.dueDate);
         endTime.add(Calendar.HOUR, 1);
 
-        WeekViewEvent assignment = new WeekViewEvent(numAssignments, asgnmt.name, startTime, endTime);
+        WeekViewEvent assignment = new WeekViewEvent(eventId, asgnmt.name, startTime, endTime);
 
         switch (asgnmt.priorityLevel)
         {
@@ -351,7 +360,9 @@ public class HomeActivity extends AppCompatActivity
         switch (id)
         {
             case R.id.retrieveArchivedClasses:
+                //get the archived classes and update weekview with it's assignments
                 getArchivedClasses();
+                SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
                 Toast.makeText(getApplicationContext(), "Archived classes were retrieved" , Toast.LENGTH_SHORT).show();
                 break;
             case R.id.addClassContextMenuCancelButton:
@@ -436,6 +447,8 @@ public class HomeActivity extends AppCompatActivity
 
                 //archive the class in the databse
                 ClassModel.makeClassArchived(className);
+                //update the weekview calendar
+                SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
                 //send the message
                 Toast.makeText(getApplicationContext(), className + " was archived!" , Toast.LENGTH_SHORT).show();
@@ -496,6 +509,7 @@ public class HomeActivity extends AppCompatActivity
 
                         //delete the class from the app
                         ClassModel.deleteClass(className);
+                        SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
