@@ -25,6 +25,7 @@
         app:layout_marginTopPercent="22.5%"
         android:text="View All Assignments"
         android:textAllCaps="false"
+        android:onClick="goToViewAssignmentsActivity"
         android:textSize="20sp" />
 
     <Button

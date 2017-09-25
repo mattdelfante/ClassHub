@@ -197,6 +197,9 @@ public class HomeActivity extends AppCompatActivity
             case 3:
                 assignment.setColor(Color.RED);
                 break;
+            case 4:
+                assignment.setColor(Color.GREEN);
+                break;
             default:
                 assignment.setColor(Color.BLUE);
                 break;

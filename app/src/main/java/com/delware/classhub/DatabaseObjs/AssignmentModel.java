@@ -38,4 +38,6 @@ public class AssignmentModel extends Model
 
     @Column(name = "IsCompleted")
     public Boolean isCompleted;
+
+
 }

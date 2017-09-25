@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewAssignmentsActivityPercentRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.delware.classhub.Activities.HomeActivity">
+
+    <ListView
+        android:id="@+id/assignmentsListView"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="100%" />
+
+</android.support.percent.PercentRelativeLayout>

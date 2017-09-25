@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activityViewAssignmentsDialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.delware.classhub.Activities.HomeActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editAssignmentName"
+        android:text="Edit Assignment Name:"
+        app:layout_marginLeftPercent="1%"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/editAssignmentNameInput"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:inputType="textCapSentences|textAutoCorrect"
+        android:layout_below="@+id/editAssignmentName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/editDueDateButton"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:text="Edit Due Date"
+        android:textAllCaps="false"
+        android:layout_below="@+id/editAssignmentNameInput"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:id="@+id/editPriorityLevelButton"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:text="Edit Priority Level"
+        android:textAllCaps="false"
+        android:layout_below="@+id/editDueDateButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:id="@+id/completedAssignmentButton"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:text="Mark Assignment As Completed"
+        android:textAllCaps="false"
+        android:layout_below="@+id/editPriorityLevelButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:id="@+id/deleteAssignmentButton"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:text="Delete Assignment"
+        android:textAllCaps="false"
+        android:layout_below="@+id/completedAssignmentButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:id="@+id/editAdditionalNotes"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="20%"
+        android:gravity="top|left"
+        android:layout_below="@+id/deleteAssignmentButton"
+        android:background="@android:color/transparent" />
+
+    <Button
+        android:id="@+id/viewAssingmentCancelButton"
+        app:layout_widthPercent="50%"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:layout_below="@+id/editAdditionalNotes"/>
+
+    <Button
+        android:id="@+id/viewAssingmentDoneButton"
+        app:layout_widthPercent="50%"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        app:layout_marginLeftPercent="50%"
+        android:textAllCaps="false"
+        android:layout_below="@+id/editAdditionalNotes"/>
+
+</android.support.percent.PercentRelativeLayout>

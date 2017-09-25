@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -202,7 +203,7 @@ public class ClassActivity extends AppCompatActivity {
                 if (input.trim().length() > 0)
                     newAssignment.additionalNotes = input;
                 else
-                    newAssignment.additionalNotes = null;
+                    newAssignment.additionalNotes = "";
             }
 
             @Override
@@ -261,5 +262,11 @@ public class ClassActivity extends AppCompatActivity {
     public void showAddAssignmentDialog(View v)
     {
         m_addAssignmentDialog.show();
+    }
+
+    public void goToViewAssignmentsActivity(View v)
+    {
+        Intent intent = new Intent(ClassActivity.this, ViewAssignmentsActivity.class);
+        startActivity(intent);
     }
 }

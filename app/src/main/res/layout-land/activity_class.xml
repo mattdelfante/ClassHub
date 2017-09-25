@@ -23,6 +23,7 @@
         app:layout_heightPercent="20%"
         app:layout_marginTopPercent="20%"
         android:text="View All Assignments"
+        android:onClick="goToViewAssignmentsActivity"
         android:textAllCaps="false"
         android:textSize="20sp" />
 
