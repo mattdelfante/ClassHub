@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,10 +42,10 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity
 {
     //pop up dialog box when you long press the add class button
-    private Dialog m_dialogForAddClassButton;
+    private Dialog m_dialogForAddClassButton = null;
 
     //pop up alert dialog box when you long press on a class in the list view
-    private Dialog m_alertDialogForLongPressingAClass;
+    private Dialog m_alertDialogForLongPressingAClass = null;
 
     //holds the meta data about a class when you long press a class
     private LongClickedClass m_longClickedClass;
@@ -96,6 +97,28 @@ public class HomeActivity extends AppCompatActivity
         createDialogBoxForLongPressingAClass();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (m_dialogForAddClassButton != null)
+            m_dialogForAddClassButton.dismiss();
+
+        if (m_alertDialogForLongPressingAClass != null)
+            m_alertDialogForLongPressingAClass.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (m_dialogForAddClassButton != null)
+            m_dialogForAddClassButton.dismiss();
+
+        if (m_alertDialogForLongPressingAClass != null)
+            m_alertDialogForLongPressingAClass.dismiss();
+    }
+
     /**
      * Adds a list of classes to the list view
      * @param classes the list of classes to add to the list view
@@ -103,7 +126,7 @@ public class HomeActivity extends AppCompatActivity
     private void addClassesFromDb(List<ClassModel> classes)
     {
         for (ClassModel model : classes)
-            m_classes.add(model.name);
+            m_classes.add(model.getName());
     }
 
     /**
@@ -114,7 +137,16 @@ public class HomeActivity extends AppCompatActivity
         WeekView.EventClickListener eventClickListener = new WeekView.EventClickListener() {
             @Override
             public void onEventClick(WeekViewEvent event, RectF eventRect) {
-                Toast.makeText(getApplicationContext(), "Clicked Hw problem", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Clicked Hw problem", Toast.LENGTH_SHORT).show();
+                //get the assignment that was tapped
+                AssignmentModel assignmentModel = AssignmentModel.getAssignment(event.getId());
+
+                //set it as the selected class
+                SingletonSelectedClass.getInstance().setSelectedClass(assignmentModel.getAssociatedClass());
+
+                //Go to the ViewAssignmentsActivity
+                Intent intent = new Intent(HomeActivity.this, ViewAssignmentsActivity.class);
+                startActivity(intent);
             }
         };
 
@@ -132,24 +164,18 @@ public class HomeActivity extends AppCompatActivity
             public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
 
                 List<WeekViewEvent> returnVal = new ArrayList<WeekViewEvent>();
-                List<ClassModel> nonArchivedClasses = ClassModel.getNonArchivedClasses();
-                List<AssignmentModel> classAssignments = null;
+                List<AssignmentModel> allAssignments = AssignmentModel.getAllAssignments();
                 java.util.Date date = new Date();
-                int numAssignments = 0;
 
-                for (ClassModel currClass : nonArchivedClasses)
-                {
-                    classAssignments = currClass.getAssignments();
+                for (AssignmentModel a : allAssignments) {
+                    ClassModel associatedClass = a.getAssociatedClass();
 
-                    for (AssignmentModel asgnmt : classAssignments)
-                    {
-                        if (newMonth == date.getMonth() + 1)
-                        {
-                            numAssignments++;
-
-                            returnVal.add(createWeekViewEvent(numAssignments, asgnmt));
-                        }
+                    //if the class the assingment is associated with isn't archived and it is the
+                    //correct month. Add it as an assignment in the assignment calendar
+                    if (associatedClass.isArchived() == false && newMonth == date.getMonth() + 1){
+                        returnVal.add(createWeekViewEvent(a.getId(), a));
                     }
+
                 }
 
                 return returnVal;
@@ -175,18 +201,18 @@ public class HomeActivity extends AppCompatActivity
      * @param asgnmt the assignment that the event is being created for
      * @return the weekview event for an assignment
      */
-    private WeekViewEvent createWeekViewEvent(int eventId, AssignmentModel asgnmt)
+    private WeekViewEvent createWeekViewEvent(long eventId, AssignmentModel asgnmt)
     {
         Calendar startTime = Calendar.getInstance();
-        startTime.setTime(asgnmt.dueDate);
+        startTime.setTime(asgnmt.getDueDate());
 
         Calendar endTime = Calendar.getInstance();
-        endTime.setTime(asgnmt.dueDate);
+        endTime.setTime(asgnmt.getDueDate());
         endTime.add(Calendar.HOUR, 1);
 
-        WeekViewEvent assignment = new WeekViewEvent(eventId, asgnmt.name, startTime, endTime);
+        WeekViewEvent assignment = new WeekViewEvent(eventId, asgnmt.getName(), startTime, endTime);
 
-        switch (asgnmt.priorityLevel)
+        switch (asgnmt.getPriorityLevel())
         {
             case 1:
                 assignment.setColor(Color.BLUE);
@@ -253,8 +279,8 @@ public class HomeActivity extends AppCompatActivity
                 m_classesListViewAdapter.notifyDataSetChanged();
 
                 //save the new class to the database
-                newClass.name = className;
-                newClass.isArchived = false;
+                newClass.setName(className);
+                newClass.setIsArchived(false);
                 newClass.save();
 
                 Toast.makeText(getApplicationContext(), "Added: " + className, Toast.LENGTH_SHORT).show();
@@ -385,11 +411,10 @@ public class HomeActivity extends AppCompatActivity
 
         for (ClassModel _class : archivedClasses)
         {
-            _class.isArchived = false;
+            _class.setIsArchived(false);
             _class.save();
-            m_classes.add(_class.name);
+            m_classes.add(_class.getName());
         }
-
         m_classesListViewAdapter.notifyDataSetChanged();
     }
 
@@ -436,7 +461,8 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                createAlertDialogForConfirmation("Are you sure you want to delete the class: " + m_classes.get(m_longClickedClass.position) + "?", m_classes.get(m_longClickedClass.position));
+                createAlertDialogForConfirmation("Are you sure you want to delete the class: "
+                        + m_classes.get(m_longClickedClass.position) + "?", m_classes.get(m_longClickedClass.position));
             }
         });
 
@@ -513,6 +539,9 @@ public class HomeActivity extends AppCompatActivity
                         //delete the class from the app
                         ClassModel.deleteClass(className);
                         SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+
+                        Toast.makeText(getApplicationContext(), "The class: " + className + " was deleted.",
+                                       Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -529,9 +558,7 @@ public class HomeActivity extends AppCompatActivity
      * @param v the view that the dialog box is displayed
      */
     public void displayLongPressedClassDialogBox(View v)
-    {
-        m_alertDialogForLongPressingAClass.show();
-    }
+    { m_alertDialogForLongPressingAClass.show(); }
 
     /**
      * Displays the dialog box when long pressing the add class button

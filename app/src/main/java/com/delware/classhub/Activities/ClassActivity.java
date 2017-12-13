@@ -29,7 +29,7 @@ import java.util.Calendar;
 public class ClassActivity extends AppCompatActivity {
 
     private Context m_activityContext = this;
-    private Dialog m_addAssignmentDialog;
+    private Dialog m_addAssignmentDialog = null;
 
     /**
      * Creates everything needed for the ClassActivity
@@ -47,10 +47,27 @@ public class ClassActivity extends AppCompatActivity {
 
         //get the name of the class at make that the title of the page
         TextView actionBarTextView = (TextView) findViewById(R.id.classActivityActionBarTitle);
-        actionBarTextView.setText(SingletonSelectedClass.getInstance().getSelectedClass().name);
+        actionBarTextView.setText(SingletonSelectedClass.getInstance().getSelectedClass().getName());
 
         createAddAssignmentOnClickDialog();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (m_addAssignmentDialog != null)
+            m_addAssignmentDialog.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (m_addAssignmentDialog != null)
+            m_addAssignmentDialog.dismiss();
+    }
+
 
     /**
      * Creates the logic for what happens when clicking the Add Assignment button.
@@ -68,7 +85,7 @@ public class ClassActivity extends AppCompatActivity {
         final Button doneButton = (Button) dialog.findViewById(R.id.classDoneButton);
 
         final AssignmentModel newAssignment = new AssignmentModel();
-        newAssignment.associatedClass = SingletonSelectedClass.getInstance().getSelectedClass();
+        newAssignment.setAssociatedClass(SingletonSelectedClass.getInstance().getSelectedClass());
 
         //assignment name input logic
         asgnmtNameInput.addTextChangedListener(new TextWatcher() {
@@ -87,14 +104,14 @@ public class ClassActivity extends AppCompatActivity {
                 //not all whitespace or empty
                 if (input.trim().length() > 0)
                 {
-                    newAssignment.name = input;
+                    newAssignment.setName(input);
 
                     if (isValidAssignment(newAssignment))
                         doneButton.setEnabled(true);
                 }
                 else
                 {
-                    newAssignment.name = null;
+                    newAssignment.setName(null);
                     doneButton.setEnabled(false);
                 }
             }
@@ -119,7 +136,7 @@ public class ClassActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.MINUTE, selectedMinute);
 
                         //Now the assignments date is properly set
-                        newAssignment.dueDate = myCalendar.getTime();
+                        newAssignment.setDueDate(myCalendar.getTime());
 
                         if (isValidAssignment(newAssignment))
                             doneButton.setEnabled(true);
@@ -158,7 +175,7 @@ public class ClassActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //index 0 is priority level 1, so add 1 to the index to get the correct priority level
-                        newAssignment.priorityLevel = which + 1;
+                        newAssignment.setPriorityLevel(which + 1);
                     }
                 })
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
@@ -169,7 +186,7 @@ public class ClassActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //goes back to Priority Level One
-                        newAssignment.priorityLevel = 1;
+                        newAssignment.setPriorityLevel(1);
                     }
                 });
 
@@ -201,9 +218,9 @@ public class ClassActivity extends AppCompatActivity {
                 String input = s.toString();
                 //not all whitespace or empty
                 if (input.trim().length() > 0)
-                    newAssignment.additionalNotes = input;
+                    newAssignment.setAdditionalNotes(input);
                 else
-                    newAssignment.additionalNotes = "";
+                    newAssignment.setAdditionalNotes("");
             }
 
             @Override
@@ -252,7 +269,7 @@ public class ClassActivity extends AppCompatActivity {
      */
     private Boolean isValidAssignment(AssignmentModel a)
     {
-        return a.name != null && a.dueDate != null;
+        return a.getName() != null && a.getDueDate() != null;
     }
 
     /**

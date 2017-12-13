@@ -13,19 +13,31 @@ public class ClassModel extends Model
     //One important thing to note is that ActiveAndroid creates an id field for your tables.
     //This field is an auto-incrementing primary key.
 
-    public ClassModel()
-    {
-        super();
-        name = null;
-        isArchived = false;
-    }
-
     @Column(name = "Name")
-    public String name;
+    private String m_name;
 
     //booleans get serialized to ints, 0 means false, 1 means true
     @Column(name = "IsArchived")
-    public Boolean isArchived;
+    private Boolean m_isArchived;
+
+    public ClassModel()
+    {
+        super();
+        m_name = null;
+        m_isArchived = false;
+    }
+
+    public String getName()
+    { return m_name; }
+
+    public void setName(String name)
+    { m_name = name; }
+
+    public Boolean isArchived()
+    { return m_isArchived; }
+
+    public void setIsArchived(Boolean isArchived)
+    { m_isArchived = isArchived; }
 
     //returns a list of Assignments that are assoicated with a class
     public List<AssignmentModel> getAssignments()
@@ -56,7 +68,7 @@ public class ClassModel extends Model
         //delete all of the assignments associated with a class
         for (AssignmentModel model : assignments)
         {
-            new Delete().from(AssignmentModel.class).where("Name = ?", model.name).execute();
+            new Delete().from(AssignmentModel.class).where("Name = ?", model.getName()).execute();
         }
 
         //delete the class
@@ -66,14 +78,14 @@ public class ClassModel extends Model
     public static void renameClass(String oldClassName, String newClassName)
     {
         ClassModel _class = new Select().from(ClassModel.class).where("Name = ?", oldClassName).executeSingle();
-        _class.name = newClassName;
+        _class.m_name = newClassName;
         _class.save();
     }
 
     public static void makeClassArchived(String className)
     {
         ClassModel _class = new Select().from(ClassModel.class).where("Name = ?", className).executeSingle();
-        _class.isArchived = true;
+        _class.m_isArchived = true;
         _class.save();
     }
 

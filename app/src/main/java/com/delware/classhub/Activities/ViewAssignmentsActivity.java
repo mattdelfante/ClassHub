@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.delware.classhub.CustomAdapters.ViewAssignmentsArrayAdapter;
 import com.delware.classhub.DatabaseObjs.AssignmentModel;
 import com.delware.classhub.DatabaseObjs.ClassModel;
 import com.delware.classhub.R;
@@ -33,7 +36,7 @@ import java.util.List;
 
 public class ViewAssignmentsActivity extends AppCompatActivity {
 
-    private ArrayAdapter<String> m_listViewAdapter;
+    private ViewAssignmentsArrayAdapter m_adapter = null;
     private final Context m_activityContext = this;
     private Dialog m_assignmentDialog = null;
     private AssignmentModel m_selectedAssignment = null;
@@ -50,19 +53,27 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
         initializeListView();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (m_assignmentDialog != null)
+            m_assignmentDialog.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (m_assignmentDialog != null)
+            m_assignmentDialog.dismiss();
+    }
+
     private void initializeListView() {
-        List<AssignmentModel> assignments = SingletonSelectedClass.getInstance().getSelectedClass().getAssignments();
-        ArrayList<String> assignmentNames = new ArrayList<String>();
-
-        for (AssignmentModel assignment: assignments)
-        {
-            assignmentNames.add(assignment.name);
-        }
-
-        m_listViewAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, assignmentNames);
+        m_adapter = new ViewAssignmentsArrayAdapter(this);
 
         ListView assignmentsListView = (ListView) findViewById(R.id.assignmentsListView);
-        assignmentsListView.setAdapter(m_listViewAdapter);
+        assignmentsListView.setAdapter(m_adapter);
 
         //set the click stuff
         assignmentsListView.setOnItemClickListener(
@@ -82,7 +93,7 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
 
         for (AssignmentModel assignment : assignments)
         {
-            if (assignment.name.equals(assignmentName))
+            if (assignment.getName().equals(assignmentName))
             {
                 m_selectedAssignment = assignment;
                 break;
@@ -109,7 +120,7 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
         final Button viewAssingmentDoneButton = (Button) dialog.findViewById(R.id.viewAssingmentDoneButton);
 
         //start off with the dialog holding the values of the assignment
-        editAssignmentNameInput.setText(m_selectedAssignment.name);
+        editAssignmentNameInput.setText(m_selectedAssignment.getName());
         editAssignmentNameInput.addTextChangedListener(new TextWatcher() {
             //start off as a disabled done button
             @Override
@@ -126,14 +137,14 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
                 //not all whitespace or empty
                 if (input.trim().length() > 0)
                 {
-                    m_selectedAssignment.name = input;
+                    m_selectedAssignment.setName(input);
 
                     if (isValidAssignment())
                         viewAssingmentDoneButton.setEnabled(true);
                 }
                 else
                 {
-                    m_selectedAssignment.name = null;
+                    m_selectedAssignment.setName(null);
                     viewAssingmentDoneButton.setEnabled(false);
                 }
             }
@@ -141,7 +152,7 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
 
         //due date stuff
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(m_selectedAssignment.dueDate);
+        calendar.setTime(m_selectedAssignment.getDueDate());
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -160,7 +171,7 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
                         calendar.set(Calendar.MINUTE, selectedMinute);
 
                         //Now the assignments date is properly set
-                        m_selectedAssignment.dueDate = calendar.getTime();
+                        m_selectedAssignment.setDueDate(calendar.getTime());
 
                         if (isValidAssignment())
                             viewAssingmentDoneButton.setEnabled(true);
@@ -196,11 +207,11 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
                 AlertDialog.Builder adBuilder = new AlertDialog.Builder(m_activityContext);
                 adBuilder.setTitle("Select A Priority Level");
 
-                adBuilder.setSingleChoiceItems(choices, m_selectedAssignment.priorityLevel - 1, new DialogInterface.OnClickListener(){
+                adBuilder.setSingleChoiceItems(choices, m_selectedAssignment.getPriorityLevel() - 1, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //index 0 is priority level 1, so add 1 to the index to get the correct priority level
-                        m_selectedAssignment.priorityLevel = which + 1;
+                        m_selectedAssignment.setPriorityLevel(which + 1);
                     }
                 })
                         .setPositiveButton("Done", new DialogInterface.OnClickListener() {
@@ -222,12 +233,14 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //priority level 4 means the assignment is completed
-                m_selectedAssignment.priorityLevel = 4;
+                m_selectedAssignment.setPriorityLevel(4);
+                m_selectedAssignment.setIsCompleted(true);
 
                 //add the assignment to the database
                 m_selectedAssignment.save();
                 SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
-                Toast.makeText(getApplicationContext(), "The assignment, " + m_selectedAssignment.name + ", was marked as completed.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "The assignment, " + m_selectedAssignment.getName() +
+                        ", was marked as completed.", Toast.LENGTH_SHORT).show();
 
                 //Reset the activity while making the transition seamless
                 finish();
@@ -242,7 +255,7 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
         deleteAssignmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = m_selectedAssignment.name;
+                String name = m_selectedAssignment.getName();
                 m_selectedAssignment.delete();
                 Toast.makeText(getApplicationContext(), "The assignment, " + name + ", was deleted.", Toast.LENGTH_SHORT).show();
                 SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
@@ -257,7 +270,7 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
         //delete assingment button
 
         //additional notes stuff
-        editAdditionalNotes.setText(m_selectedAssignment.additionalNotes);
+        editAdditionalNotes.setText(m_selectedAssignment.getAdditionalNotes());
         editAdditionalNotes.addTextChangedListener(new TextWatcher() {
             //start off as a disabled done button
             @Override
@@ -268,9 +281,9 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
                 String input = s.toString();
                 //not all whitespace or empty
                 if (input.trim().length() > 0)
-                    m_selectedAssignment.additionalNotes = input;
+                    m_selectedAssignment.setAdditionalNotes(input);
                 else
-                    m_selectedAssignment.additionalNotes = "";
+                    m_selectedAssignment.setAdditionalNotes("");
             }
 
             @Override
@@ -314,6 +327,6 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
      */
     private Boolean isValidAssignment()
     {
-        return m_selectedAssignment.name != null && m_selectedAssignment.dueDate != null;
+        return m_selectedAssignment.getName() != null && m_selectedAssignment.getDueDate() != null;
     }
 }
