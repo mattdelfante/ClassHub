@@ -286,4 +286,11 @@ public class ClassActivity extends AppCompatActivity {
         Intent intent = new Intent(ClassActivity.this, ViewAssignmentsActivity.class);
         startActivity(intent);
     }
+
+    public void goToAudioRecordingsActivity(View v)
+    {
+        Intent intent = new Intent(ClassActivity.this, AudioRecordingsActivity.class);
+        startActivity(intent);
+    }
+
 }

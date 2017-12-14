@@ -31,7 +31,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.ClassActivity" />
-        <activity android:name=".Activities.ViewAssignmentsActivity"></activity>
+        <activity android:name=".Activities.ViewAssignmentsActivity" />
+        <activity android:name=".Activities.AudioRecordingsActivity" />
+        <activity android:name=".Activities.RecordAudioActivity"></activity>
     </application>
 
 </manifest>
