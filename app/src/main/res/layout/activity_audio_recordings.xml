@@ -25,6 +25,7 @@
         app:layout_marginTopPercent="50%"
         app:layout_marginLeftPercent="2.5%"
         android:text="View Audio Recordings"
+        android:onClick="goToViewAudioRecordingsActivity"
         android:textSize="20sp"
         android:id="@+id/viewRecordingsButton"
         android:textAllCaps="false" />

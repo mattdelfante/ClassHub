@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activityViewAudioRecordingsDialog">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/optionsTitle"
+        android:text="Options"
+        android:textColor="@color/black"
+        app:layout_marginLeftPercent="38%"
+        android:textSize="24sp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/playAudioRecordingButton"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:text="Play Audio Recording"
+        android:textAllCaps="false"
+        android:layout_below="@+id/optionsTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:id="@+id/renameAudioRecordingButton"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:text="Rename Audio Recording"
+        android:textAllCaps="false"
+        android:layout_below="@+id/playAudioRecordingButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:id="@+id/deleteAudioRecordingButton"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:text="Delete Audio Recording"
+        android:textAllCaps="false"
+        android:layout_below="@+id/renameAudioRecordingButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+</android.support.percent.PercentRelativeLayout>

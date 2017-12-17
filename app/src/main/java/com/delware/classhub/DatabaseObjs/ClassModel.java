@@ -1,9 +1,16 @@
 package com.delware.classhub.DatabaseObjs;
+import android.content.ContentProvider;
+import android.content.Context;
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.delware.classhub.Activities.HomeActivity;
+
+import java.io.File;
 import java.util.List;
 
 @Table(name = "Classes")
@@ -45,6 +52,11 @@ public class ClassModel extends Model
         return getMany(AssignmentModel.class, "Class");
     }
 
+    public List<AudioRecordingModel> getAudioRecordings()
+    {
+        return getMany(AudioRecordingModel.class, "Class");
+    }
+
     public static List<ClassModel> getNonArchivedClasses()
     {
         return new Select().from(ClassModel.class).where("IsArchived = ?", 0).execute();
@@ -60,9 +72,19 @@ public class ClassModel extends Model
         return new Select().from(ClassModel.class).execute();
     }
 
-    public static void deleteClass(String className)
+    public static void deleteClass(String className, Context context)
     {
         ClassModel classModel = getClass(className);
+
+        deleteAssociatedAssignments(classModel);
+        deleteAssociatedAudioRecordings(classModel, context);
+
+        //delete the class
+        new Delete().from(ClassModel.class).where("Name = ?", className).execute();
+    }
+
+    private static void deleteAssociatedAssignments(ClassModel classModel)
+    {
         List<AssignmentModel> assignments = classModel.getAssignments();
 
         //delete all of the assignments associated with a class
@@ -70,9 +92,27 @@ public class ClassModel extends Model
         {
             new Delete().from(AssignmentModel.class).where("Name = ?", model.getName()).execute();
         }
+    }
 
-        //delete the class
-        new Delete().from(ClassModel.class).where("Name = ?", className).execute();
+    private static void deleteAssociatedAudioRecordings(ClassModel classModel, Context context)
+    {
+        List<AudioRecordingModel> audioRecordings = classModel.getAudioRecordings();
+
+        String modifiedClassName = classModel.getName().replaceAll("[^_a-zA-Z0-9\\.\\-]", "");
+
+        String pathToRecording = context.getFilesDir() + "/" + modifiedClassName + "_";
+
+        for (AudioRecordingModel model : audioRecordings)
+        {
+            File f = new File(pathToRecording + model.getName() + ".mp4");
+
+            //delete the audio recording from internal storage
+            if (f.delete() == false)
+                Log.i("LOG: ", "The audio recording: " + model.getName() + " was not deleted.");
+
+            //delete the audio recording from the db
+            new Delete().from(AudioRecordingModel.class).where("Name = ?", model.getName()).execute();
+        }
     }
 
     public static void renameClass(String oldClassName, String newClassName)

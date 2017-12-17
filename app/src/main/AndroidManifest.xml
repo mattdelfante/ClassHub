@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.delware.classhub">
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:name="com.activeandroid.app.Application"
         android:allowBackup="true"
@@ -15,10 +17,10 @@
             android:value="ClassHubDB.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="1" />
+            android:value="2" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.delware.classhub.DatabaseObjs.ClassModel, com.delware.classhub.DatabaseObjs.AssignmentModel" />
+            android:value="com.delware.classhub.DatabaseObjs.ClassModel, com.delware.classhub.DatabaseObjs.AssignmentModel, com.delware.classhub.DatabaseObjs.AudioRecordingModel" />
         <meta-data
             android:name="AA_SERIALIZERS"
             android:value="com.delware.classhub.DatabaseTypeSerializers.UtilDateSerializer" />
@@ -33,7 +35,8 @@
         <activity android:name=".Activities.ClassActivity" />
         <activity android:name=".Activities.ViewAssignmentsActivity" />
         <activity android:name=".Activities.AudioRecordingsActivity" />
-        <activity android:name=".Activities.RecordAudioActivity"></activity>
+        <activity android:name=".Activities.RecordAudioActivity" />
+        <activity android:name=".Activities.ViewAudioRecordingsActivity"></activity>
     </application>
 
 </manifest>

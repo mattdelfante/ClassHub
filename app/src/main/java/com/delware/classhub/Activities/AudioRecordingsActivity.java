@@ -10,7 +10,7 @@ import com.delware.classhub.R;
 public class AudioRecordingsActivity extends AppCompatActivity {
 
     //This activity will essentially act as a caller of the RecordAudioActivity and
-    //the ViewAudioRecordings activity
+    //the ViewAudioRecordingsActivity activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +23,12 @@ public class AudioRecordingsActivity extends AppCompatActivity {
     public void goToRecordAudioActivity(View v)
     {
         Intent intent = new Intent(AudioRecordingsActivity.this, RecordAudioActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToViewAudioRecordingsActivity(View v)
+    {
+        Intent intent = new Intent(AudioRecordingsActivity.this, ViewAudioRecordingsActivity.class);
         startActivity(intent);
     }
 }

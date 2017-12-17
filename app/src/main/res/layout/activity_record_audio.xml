@@ -16,6 +16,7 @@
         android:text="Pause Recording"
         android:textSize="20sp"
         android:id="@+id/pauseContinueButton"
+        android:onClick="pauseContinueHandler"
         android:textAllCaps="false" />
 
     <Button
@@ -26,6 +27,7 @@
         android:text="Finish Recording"
         android:textSize="20sp"
         android:id="@+id/finishRecordingButton"
+        android:onClick="finishAudioRecording"
         android:textAllCaps="false" />
 
 </android.support.percent.PercentRelativeLayout>

@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //deletes the database, do this if you need to reset the schema or anything
+        //deletes the database
         //this.deleteDatabase("ClassHubDB");
 
         //initialize the database
@@ -537,7 +537,7 @@ public class HomeActivity extends AppCompatActivity
                         m_classesListViewAdapter.notifyDataSetChanged();
 
                         //delete the class from the app
-                        ClassModel.deleteClass(className);
+                        ClassModel.deleteClass(className, getApplicationContext());
                         SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
                         Toast.makeText(getApplicationContext(), "The class: " + className + " was deleted.",
