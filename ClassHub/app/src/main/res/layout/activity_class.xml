@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/classActivityMainPercentRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.delware.classhub.Activities.HomeActivity">
+
+    <Button
+        android:id="@+id/addAssignmentButton"
+        app:layout_marginTopPercent="2.5%"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="15%"
+        android:text="Add an Assignment"
+        android:textAllCaps="false"
+        android:onClick="showAddAssignmentDialog"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/viewAssignmentButton"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="15%"
+        app:layout_marginTopPercent="22.5%"
+        android:text="View All Assignments"
+        android:textAllCaps="false"
+        android:onClick="goToViewAssignmentsActivity"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/audioRecordingButton"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="15%"
+        app:layout_marginTopPercent="42.5%"
+        android:text="Audio Recordings"
+        android:onClick="goToAudioRecordingsActivity"
+        android:textAllCaps="false"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/videoRecordingButton"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="15%"
+        app:layout_marginTopPercent="62.5%"
+        android:text="Video Recordings"
+        android:textAllCaps="false"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/notesButton"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="15%"
+        app:layout_marginTopPercent="82.5%"
+        android:text="Notes"
+        android:textAllCaps="false"
+        android:textSize="20sp" />
+
+</android.support.percent.PercentRelativeLayout>

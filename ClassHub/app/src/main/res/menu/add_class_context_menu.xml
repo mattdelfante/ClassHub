@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Defines items that will be in the menu-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/retrieveArchivedClasses"
+        android:title="Retrieve Archived Classes" />
+    <item android:id="@+id/addClassContextMenuCancelButton"
+        android:title="Cancel" />
+</menu>

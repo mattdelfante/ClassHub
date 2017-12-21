@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/recordAudioActivityPercentRelativeLayout"
+    tools:context="com.delware.classhub.Activities.RecordAudioActivity">
+
+    <Button
+        app:layout_widthPercent="47.5%"
+        app:layout_heightPercent="20%"
+        app:layout_marginTopPercent="35%"
+        app:layout_marginLeftPercent="2.5%"
+        android:text="Pause Recording"
+        android:textSize="20sp"
+        android:id="@+id/pauseContinueAudioRecordingButton"
+        android:onClick="pauseContinueAudioRecordingHandler"
+        android:textAllCaps="false" />
+
+    <Button
+        app:layout_widthPercent="47.5%"
+        app:layout_heightPercent="20%"
+        app:layout_marginTopPercent="35%"
+        app:layout_marginLeftPercent="50%"
+        android:text="Finish Recording"
+        android:textSize="20sp"
+        android:id="@+id/finishRecordingButton"
+        android:onClick="finishAudioRecording"
+        android:textAllCaps="false" />
+
+</android.support.percent.PercentRelativeLayout>
