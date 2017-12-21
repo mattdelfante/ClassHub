@@ -2,7 +2,7 @@
 
 <b>Description:</b><br />
 
-ClassHub is an Android application that organizes academic class information in a convenient manner. More specifically, it allows users to organize a class' assignments, notes, audio recordings and video recordings all within one Android application. ClassHub tries to aid students' academic success by providing an easier way for them to store class infromation.
+ClassHub is an Android application that organizes academic class information in a convenient manner. More specifically, it allows users to organize a class' assignments, notes, audio recordings and video recordings all within one Android application. ClassHub tries to aid students' academic success by providing an easier way for them to store class infromation. Note: The application won't be fully developed until June 2018.
 
 <b>Technologies Used:</b> 
 * The Android SDK
