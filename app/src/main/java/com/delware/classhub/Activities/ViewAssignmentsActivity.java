@@ -5,50 +5,57 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.delware.classhub.CustomAdapters.ViewAssignmentsArrayAdapter;
 import com.delware.classhub.DatabaseObjs.AssignmentModel;
-import com.delware.classhub.DatabaseObjs.ClassModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 import com.delware.classhub.Singletons.SingletonWeekView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class ViewAssignmentsActivity extends AppCompatActivity {
+/**
+ * Overview: This class allows users to view and edit
+ * existing assignments associated with a certain class.
+ * @author Matt Del Fante
+ */
+public class ViewAssignmentsActivity extends AppCompatActivity
+{
 
-    private ViewAssignmentsArrayAdapter m_adapter = null;
     private final Context m_activityContext = this;
     private Dialog m_assignmentDialog = null;
     private AssignmentModel m_selectedAssignment = null;
+    private String m_originalAssignmentName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //overwrite the action bar title
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.activity_view_assignments_action_bar);
+        getSupportActionBar().setCustomView(R.layout.default_action_bar_layout);
 
         setContentView(R.layout.activity_view_assignments);
+
+        //Set the content of the action bar title
+        TextView actionBarTextView = (TextView) findViewById(R.id.defaultActionBarTitle);
+        actionBarTextView.setText("Assignments");
 
         initializeListView();
     }
@@ -69,11 +76,14 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
             m_assignmentDialog.dismiss();
     }
 
+    /**
+     * Initializes the list view's values and sets up the logic for when an item is clicked
+     */
     private void initializeListView() {
-        m_adapter = new ViewAssignmentsArrayAdapter(this);
+        ViewAssignmentsArrayAdapter adapter = new ViewAssignmentsArrayAdapter(this);
 
         ListView assignmentsListView = (ListView) findViewById(R.id.assignmentsListView);
-        assignmentsListView.setAdapter(m_adapter);
+        assignmentsListView.setAdapter(adapter);
 
         //set the click stuff
         assignmentsListView.setOnItemClickListener(
@@ -87,8 +97,13 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * Displays the dialog box which allows a user to interact with an assignment.
+     * @param assignmentName the name of the assignment that was clicked on.
+     */
     private void clickedAssignmentHandler(String assignmentName)
     {
+        m_originalAssignmentName = assignmentName;
         List<AssignmentModel> assignments = SingletonSelectedClass.getInstance().getSelectedClass().getAssignments();
 
         for (AssignmentModel assignment : assignments)
@@ -104,6 +119,9 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
         m_assignmentDialog.show();
     }
 
+    /**
+     * Creates the dialog box needed for a user to interact with an assignment.
+     */
     private void createDialogBoxForPressingAssignment()
     {
         final Dialog dialog = new Dialog(m_activityContext);
@@ -116,8 +134,14 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
         final Button completedAssignmentButton = (Button) dialog.findViewById(R.id.completedAssignmentButton);
         final Button deleteAssignmentButton = (Button) dialog.findViewById(R.id.deleteAssignmentButton);
         final EditText editAdditionalNotes = (EditText) dialog.findViewById(R.id.editAdditionalNotes);
-        final Button viewAssingmentCancelButton = (Button) dialog.findViewById(R.id.viewAssingmentCancelButton);
-        final Button viewAssingmentDoneButton = (Button) dialog.findViewById(R.id.viewAssingmentDoneButton);
+        final Button viewAssignmentCancelButton = (Button) dialog.findViewById(R.id.viewAssingmentCancelButton);
+        final Button viewAssignmentDoneButton = (Button) dialog.findViewById(R.id.viewAssingmentDoneButton);
+
+        if (m_selectedAssignment.getIsCompleted())
+        {
+            editPriorityLevelButton.setEnabled(false);
+            completedAssignmentButton.setEnabled(false);
+        }
 
         //start off with the dialog holding the values of the assignment
         editAssignmentNameInput.setText(m_selectedAssignment.getName());
@@ -136,17 +160,9 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
 
                 //not all whitespace or empty
                 if (input.trim().length() > 0)
-                {
-                    m_selectedAssignment.setName(input);
-
-                    if (isValidAssignment())
-                        viewAssingmentDoneButton.setEnabled(true);
-                }
+                    viewAssignmentDoneButton.setEnabled(true);
                 else
-                {
-                    m_selectedAssignment.setName(null);
-                    viewAssingmentDoneButton.setEnabled(false);
-                }
+                    viewAssignmentDoneButton.setEnabled(false);
             }
         });
 
@@ -173,9 +189,6 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
                         //Now the assignments date is properly set
                         m_selectedAssignment.setDueDate(calendar.getTime());
 
-                        if (isValidAssignment())
-                            viewAssingmentDoneButton.setEnabled(true);
-
                     }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
                 tpd.show();
@@ -193,7 +206,6 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
                 dpd.show();
             }
         });
-        //due date stuff
 
         //priority level logic
         editPriorityLevelButton.setOnClickListener(new View.OnClickListener(){
@@ -226,7 +238,6 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
                 adBuilder.show();
             }
         });
-        //priority level stuff
 
         //completed assignment button
         completedAssignmentButton.setOnClickListener(new View.OnClickListener() {
@@ -249,25 +260,14 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
-        //completed assignment button
 
-        //delete assingment button
+        //delete assignment button
         deleteAssignmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = m_selectedAssignment.getName();
-                m_selectedAssignment.delete();
-                Toast.makeText(getApplicationContext(), "The assignment, " + name + ", was deleted.", Toast.LENGTH_SHORT).show();
-                SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
-
-                //Reset the activity while making the transition seamless
-                finish();
-                overridePendingTransition(0, 0);
-                startActivity(getIntent());
-                overridePendingTransition(0, 0);
+                confirmDeletionOfAssignment();
             }
         });
-        //delete assingment button
 
         //additional notes stuff
         editAdditionalNotes.setText(m_selectedAssignment.getAdditionalNotes());
@@ -289,44 +289,101 @@ public class ViewAssignmentsActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-        //additional notes stuff
 
         //cancel button stuff
-        viewAssingmentCancelButton.setOnClickListener(new View.OnClickListener() {
+        viewAssignmentCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
-        //cancel button stuff
 
         //done button stuff
-        viewAssingmentDoneButton.setOnClickListener(new View.OnClickListener() {
+        viewAssignmentDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //add the assignment to the database
-                m_selectedAssignment.save();
-                SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+                String toastMsg;
+                String assignmentName = editAssignmentNameInput.getText().toString();
 
-                //Reset the activity while making the transition seamless
-                finish();
-                overridePendingTransition(0, 0);
-                startActivity(getIntent());
-                overridePendingTransition(0, 0);
+                //if the user didn't change the assignment name or the assignment name is unique
+                if (m_originalAssignmentName.equals(assignmentName) || isUniqueAssignmentName(assignmentName))
+                {
+                    m_selectedAssignment.setName(assignmentName);
+
+                    //update the assignment in the database
+                    m_selectedAssignment.save();
+                    SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+
+                    toastMsg = "The assignment: " + assignmentName + " was successfully updated.";
+
+                    //Reset the activity while making the transition seamless
+                    finish();
+                    overridePendingTransition(0, 0);
+                    startActivity(getIntent());
+                    overridePendingTransition(0, 0);
+                }
+                else
+                    toastMsg = "This class already has an assignment with the name: " + assignmentName + ".";
+
+                Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
             }
         });
-        //done button stuff
 
         m_assignmentDialog = dialog;
     }
 
     /**
-     * Determines weather or not the assignment is a valid assignment. An assignment is
-     * valid if it has a name and a due date.
-     * @return True if a valid assignment false if not.
+     * Creates and displays an alert dialog that asks the user if he or she is sure her or she
+     * wants to delete the assignment. On confirmation, the assignment is deleted from the database
+     * and on cancellation the alert dialog disappears.
      */
-    private Boolean isValidAssignment()
+    private void confirmDeletionOfAssignment()
     {
-        return m_selectedAssignment.getName() != null && m_selectedAssignment.getDueDate() != null;
+        final String name = m_selectedAssignment.getName();
+
+        //simple alert dialog for confirmation
+        new AlertDialog.Builder(this)
+                .setTitle("Wait...")
+                .setMessage("Are you sure you want to delete the assignment: " + name + "?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //delete the assignment form the database
+                        m_selectedAssignment.delete();
+
+                        //update the assignment calendar
+                        SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+
+                        //Reset the activity while making the transition seamless
+                        finish();
+                        overridePendingTransition(0, 0);
+                        startActivity(getIntent());
+                        overridePendingTransition(0, 0);
+
+                        Toast.makeText(getApplicationContext(), "The assignment, " + name + ", was deleted.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+
+    /**
+     * Determines weather or not the assignment has a unique name or not.
+     * @param name The name of the assignment.
+     * @return True if the name is unique, else false.
+     */
+    private boolean isUniqueAssignmentName(String name)
+    {
+        for (AssignmentModel model : SingletonSelectedClass.getInstance().getSelectedClass().getAssignments())
+        {
+            if (model.getName().equals(name))
+                return false;
+        }
+        return true;
     }
 }

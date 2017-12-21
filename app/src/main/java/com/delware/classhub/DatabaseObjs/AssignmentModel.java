@@ -8,6 +8,12 @@ import com.activeandroid.query.Select;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Overview: This class is an ORM object for ActiveAndroid.
+ * An instance of the AssignmentModel class represents a single assignment but
+ * the static methods allow operations on all AssignmentModel objects in the database.
+ * @author Matt Del Fante
+ */
 @Table(name = "Assignments")
 public class AssignmentModel extends Model
 {
@@ -42,11 +48,18 @@ public class AssignmentModel extends Model
         m_isCompleted = false;
     }
 
+    /**
+     *@return a list of all the AssignmentModels in the database.
+     */
     public static List<AssignmentModel> getAllAssignments()
     {
         return new Select().from(AssignmentModel.class).execute();
     }
 
+    /**
+     *@return the AssignmentModel with the specified unique id.
+     *@param id the primary key of an AssignmentModel in the database.
+     */
     public static AssignmentModel getAssignment(long id)
     {
         return new Select().from(AssignmentModel.class).where("Id = ?", id).executeSingle();

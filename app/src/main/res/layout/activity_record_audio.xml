@@ -15,8 +15,8 @@
         app:layout_marginLeftPercent="2.5%"
         android:text="Pause Recording"
         android:textSize="20sp"
-        android:id="@+id/pauseContinueButton"
-        android:onClick="pauseContinueHandler"
+        android:id="@+id/pauseContinueAudioRecordingButton"
+        android:onClick="pauseContinueAudioRecordingHandler"
         android:textAllCaps="false" />
 
     <Button

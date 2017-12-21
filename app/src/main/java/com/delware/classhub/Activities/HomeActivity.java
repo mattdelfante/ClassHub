@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
@@ -28,17 +29,25 @@ import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.delware.classhub.DatabaseObjs.AssignmentModel;
+import com.delware.classhub.DatabaseObjs.AudioRecordingModel;
 import com.delware.classhub.DatabaseObjs.ClassModel;
-import com.delware.classhub.Pojos.LongClickedClass;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 import com.delware.classhub.Singletons.SingletonWeekView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Overview: This class represents the startup activity within
+ * the ClassHub application. The class allows ClassModel's to be
+ * added to/deleted from the application and for existing ClassModel's
+ * to modified.
+ * @author Matt Del Fante
+ */
 public class HomeActivity extends AppCompatActivity
 {
     //pop up dialog box when you long press the add class button
@@ -46,9 +55,6 @@ public class HomeActivity extends AppCompatActivity
 
     //pop up alert dialog box when you long press on a class in the list view
     private Dialog m_alertDialogForLongPressingAClass = null;
-
-    //holds the meta data about a class when you long press a class
-    private LongClickedClass m_longClickedClass;
 
     //allows updating the list view that holds all the classes
     private ArrayAdapter<String> m_classesListViewAdapter;
@@ -71,12 +77,15 @@ public class HomeActivity extends AppCompatActivity
 
         //Overwrite the action bar of this activity to the custom one I created
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.activity_home_action_bar);
+        getSupportActionBar().setCustomView(R.layout.default_action_bar_layout);
 
         setContentView(R.layout.activity_home);
 
-        m_longClickedClass = new LongClickedClass();
-        m_classes = new ArrayList<String>();
+        //get the name of the class at make that the title of the page
+        TextView actionBarTextView = (TextView) findViewById(R.id.defaultActionBarTitle);
+        actionBarTextView.setText("Class Hub");
+
+        m_classes = new ArrayList<>();
 
         //makes it so the list view has all the non archived classes from the database
         addClassesFromDb(ClassModel.getNonArchivedClasses());
@@ -92,9 +101,6 @@ public class HomeActivity extends AppCompatActivity
 
         //initializes the classes list view
         initializeClassListView();
-
-        //makes the dialog box for long pressing a class
-        createDialogBoxForLongPressingAClass();
     }
 
     @Override
@@ -137,7 +143,6 @@ public class HomeActivity extends AppCompatActivity
         WeekView.EventClickListener eventClickListener = new WeekView.EventClickListener() {
             @Override
             public void onEventClick(WeekViewEvent event, RectF eventRect) {
-                //Toast.makeText(getApplicationContext(), "Clicked Hw problem", Toast.LENGTH_SHORT).show();
                 //get the assignment that was tapped
                 AssignmentModel assignmentModel = AssignmentModel.getAssignment(event.getId());
 
@@ -161,20 +166,20 @@ public class HomeActivity extends AppCompatActivity
         //action that populates the calendar with homework assignments
         MonthLoader.MonthChangeListener monthChangeListener = new MonthLoader.MonthChangeListener() {
             @Override
-            public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
-
-                List<WeekViewEvent> returnVal = new ArrayList<WeekViewEvent>();
+            public List<WeekViewEvent> onMonthChange(int newYear, int newMonth)
+            {
+                List<WeekViewEvent> returnVal = new ArrayList<>();
                 List<AssignmentModel> allAssignments = AssignmentModel.getAllAssignments();
                 java.util.Date date = new Date();
 
-                for (AssignmentModel a : allAssignments) {
+                for (AssignmentModel a : allAssignments)
+                {
                     ClassModel associatedClass = a.getAssociatedClass();
 
-                    //if the class the assingment is associated with isn't archived and it is the
+                    //if the class the assignment is associated with isn't archived and it is the
                     //correct month. Add it as an assignment in the assignment calendar
-                    if (associatedClass.isArchived() == false && newMonth == date.getMonth() + 1){
+                    if (!associatedClass.isArchived() && newMonth == date.getMonth() + 1)
                         returnVal.add(createWeekViewEvent(a.getId(), a));
-                    }
 
                 }
 
@@ -185,7 +190,7 @@ public class HomeActivity extends AppCompatActivity
         // Get a reference for the week view in the layout.
         WeekView weekView = (WeekView) findViewById(R.id.weekView);
 
-        //store the weekview calendar into the singleton
+        //store the week view calendar into the singleton
         if (SingletonWeekView.getInstance().getWeekView() == null)
             SingletonWeekView.getInstance().setWeekView(weekView);
 
@@ -271,21 +276,31 @@ public class HomeActivity extends AppCompatActivity
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClassModel newClass = new ClassModel();
+                String toastMsg;
                 String className = addClassInput.getText().toString();
 
-                //update the UI with new class
-                m_classes.add(className);
-                m_classesListViewAdapter.notifyDataSetChanged();
+                if (isClassNameUnique(className))
+                {
+                    ClassModel newClass = new ClassModel();
 
-                //save the new class to the database
-                newClass.setName(className);
-                newClass.setIsArchived(false);
-                newClass.save();
+                    //update the UI with new class
+                    m_classes.add(className);
+                    m_classesListViewAdapter.notifyDataSetChanged();
 
-                Toast.makeText(getApplicationContext(), "Added: " + className, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-                addClassInput.setText("");
+                    //save the new class to the database
+                    newClass.setName(className);
+                    newClass.setIsArchived(false);
+                    newClass.save();
+
+                    toastMsg = "The class: " + className + " was successfully added";
+
+                    dialog.dismiss();
+                    addClassInput.setText("");
+                }
+                else
+                    toastMsg = "Error: The name of every class must be unique.";
+
+                Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -307,7 +322,7 @@ public class HomeActivity extends AppCompatActivity
      */
     private void initializeClassListView()
     {
-        m_classesListViewAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, m_classes);
+        m_classesListViewAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, m_classes);
         ListView classesListView = (ListView) findViewById(R.id.classesListView);
         classesListView.setAdapter(m_classesListViewAdapter);
 
@@ -334,15 +349,9 @@ public class HomeActivity extends AppCompatActivity
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        displayLongPressedClassDialogBox(view);
-
-                        //remember the last class that was long clicked
-                        m_longClickedClass.parent = parent;
-                        m_longClickedClass.view = view;
-                        m_longClickedClass.position = position;
-                        m_longClickedClass.id = id;
-
-                        //idk what to return
+                        //makes the dialog box for long pressing a class
+                        createDialogBoxForLongPressingAClass(position);
+                        m_alertDialogForLongPressingAClass.show();
                         return true;
                     }
                 }
@@ -409,20 +418,21 @@ public class HomeActivity extends AppCompatActivity
     private void getArchivedClasses() {
         List<ClassModel> archivedClasses = ClassModel.getArchivedClasses();
 
-        for (ClassModel _class : archivedClasses)
+        for (ClassModel c : archivedClasses)
         {
-            _class.setIsArchived(false);
-            _class.save();
-            m_classes.add(_class.getName());
+            c.setIsArchived(false);
+            c.save();
+            m_classes.add(c.getName());
         }
         m_classesListViewAdapter.notifyDataSetChanged();
     }
 
     /**
-     * Creates the dialog box for long pressing a class and intializes
+     * Creates the dialog box for long pressing a class and initializes
      * it's actions.
+     * @param index represents the index of the class that was long pressed
      */
-    private void createDialogBoxForLongPressingAClass()
+    private void createDialogBoxForLongPressingAClass(final int index)
     {
         final Dialog dialog = new Dialog(m_activityContext);
         dialog.setContentView(R.layout.activity_home_class_dialog);
@@ -461,8 +471,9 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                String className = m_classes.get(index);
                 createAlertDialogForConfirmation("Are you sure you want to delete the class: "
-                        + m_classes.get(m_longClickedClass.position) + "?", m_classes.get(m_longClickedClass.position));
+                        + className + "?", className, index);
             }
         });
 
@@ -470,13 +481,13 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 //delete the class from the listView
-                String className = m_classes.get(m_longClickedClass.position);
-                m_classes.remove(m_longClickedClass.position);
+                String className = m_classes.get(index);
+                m_classes.remove(index);
                 m_classesListViewAdapter.notifyDataSetChanged();
 
-                //archive the class in the databse
+                //archive the class in the database
                 ClassModel.makeClassArchived(className);
-                //update the weekview calendar
+                //update the week view calendar
                 SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
                 //send the message
@@ -491,18 +502,25 @@ public class HomeActivity extends AppCompatActivity
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String oldClassName = m_classes.get(m_longClickedClass.position);
+                String oldClassName = m_classes.get(index);
                 String newClassName = inputEditText.getText().toString();
 
-                //this particular class was long clicked, update with the value inputted into the edit text
-                m_classes.set(m_longClickedClass.position, newClassName);
-                m_classesListViewAdapter.notifyDataSetChanged();
+                //if the user typed in the same name as the old class name or the class name is unique
+                if (oldClassName.equals(newClassName) || isClassNameUnique(newClassName))
+                {
+                    //this particular class was long clicked, update with the value inputted into the edit text
+                    m_classes.set(index, newClassName);
+                    m_classesListViewAdapter.notifyDataSetChanged();
 
-                //update the database record so the class has a new name
-                ClassModel.renameClass(oldClassName, newClassName);
+                    //update the database record so the class has a new name
+                    ClassModel.renameClass(oldClassName, newClassName);
 
-                dialog.dismiss();
-                inputEditText.setText("");
+                    dialog.dismiss();
+                    inputEditText.setText("");
+                }
+                else
+                    Toast.makeText(getApplicationContext(), "An existing class already has the name: " +
+                            newClassName + ".", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -522,10 +540,11 @@ public class HomeActivity extends AppCompatActivity
      * Creates the alert dialog box for confirming to delete a class
      * @param message the message displayed in the alert dialog confirmation
      * @param className the name of the class that is going to be deleted
+     * @param index the index of the class in the list view that the user wants to delete
      */
-    public void createAlertDialogForConfirmation(String message, final String className)
+    public void createAlertDialogForConfirmation(String message, final String className, final int index)
     {
-        //simple alert dialog for confimation
+        //simple alert dialog for confirmation
         new AlertDialog.Builder(this)
                 .setTitle("Wait...")
                 .setMessage(message)
@@ -533,7 +552,7 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //remove the class from the list view
-                        m_classes.remove(m_longClickedClass.position);
+                        m_classes.remove(index);
                         m_classesListViewAdapter.notifyDataSetChanged();
 
                         //delete the class from the app
@@ -548,17 +567,26 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //bring up the dialog box again
-                        displayLongPressedClassDialogBox(null);
+                        m_alertDialogForLongPressingAClass.show();
                     }
                 }).show();
     }
 
     /**
-     * Displays the dialog box when long pressing a class
-     * @param v the view that the dialog box is displayed
+     * Checks to see if any classes have the same name as the name specified in the parameter.
+     * @param name the name of the new class name.
+     * @return true if the name is unique, false if not.
      */
-    public void displayLongPressedClassDialogBox(View v)
-    { m_alertDialogForLongPressingAClass.show(); }
+    private boolean isClassNameUnique(String name)
+    {
+        for (ClassModel model : ClassModel.getAllClasses())
+        {
+            if (model.getName().equals(name))
+                return false;
+        }
+
+        return true;
+    }
 
     /**
      * Displays the dialog box when long pressing the add class button

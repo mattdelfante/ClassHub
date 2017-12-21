@@ -1,14 +1,13 @@
 package com.delware.classhub.Singletons;
 
 import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
-
-import java.util.ArrayList;
 
 /**
- * Created by Matt on 9/13/2017.
+ * Overview: This class represents a single point of global access to the WeekView
+ * calendar on the HomeActivity. This allows the ClassActivity and the ViewAssignmentsActivity
+ * to update the WeekView calendar when assignments are added to the application or are modified.
+ * @author Matt Del Fante
  */
-
 public class SingletonWeekView {
     private static SingletonWeekView instance = null;
     private WeekView m_cal = null;

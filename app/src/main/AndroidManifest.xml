@@ -36,7 +36,8 @@
         <activity android:name=".Activities.ViewAssignmentsActivity" />
         <activity android:name=".Activities.AudioRecordingsActivity" />
         <activity android:name=".Activities.RecordAudioActivity" />
-        <activity android:name=".Activities.ViewAudioRecordingsActivity"></activity>
+        <activity android:name=".Activities.ViewAudioRecordingsActivity" />
+        <activity android:name=".Activities.PlayAudioRecordingActivity"></activity>
     </application>
 
 </manifest>

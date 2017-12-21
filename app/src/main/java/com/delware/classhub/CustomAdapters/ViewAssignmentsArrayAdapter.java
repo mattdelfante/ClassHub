@@ -1,7 +1,6 @@
 package com.delware.classhub.CustomAdapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +14,26 @@ import com.delware.classhub.Singletons.SingletonSelectedClass;
 import java.util.List;
 
 /**
- * Created by Matt on 12/12/2017.
+ * Overview: This class extends the BaseAdapter class so I can make the list view in the
+ * ViewAssignmentsActivity behave how it is supposed to. See the getView function below.
+ * @author Matt Del Fante
  */
-
-//This class extends the BaseAdapter class so I can control the ViewAssignmentsActivity
-//to behave how it is supposed to. See the getView function below
 public class ViewAssignmentsArrayAdapter extends BaseAdapter
 {
     Context m_ctx = null;
     LayoutInflater m_lInflater = null;
 
-    public ViewAssignmentsArrayAdapter(Context context) {
+    public ViewAssignmentsArrayAdapter(Context context)
+    {
         m_ctx = context;
         m_lInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    /**
+     * Creates the logic so that if an assignment is completed, it's list view element
+     * will have a green background and all non-completed assignments will
+     * have list view elements with white backgrounds.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
@@ -40,7 +44,7 @@ public class ViewAssignmentsArrayAdapter extends BaseAdapter
             view = m_lInflater.inflate(R.layout.activity_view_assignments_list_item, parent, false);
 
         //if the assignment was completed, it needs a green background color
-        if (assignments.get(position).getIsCompleted() == true)
+        if (assignments.get(position).getIsCompleted())
             view.setBackgroundResource(R.drawable.list_background_color_green);
         else
             //the background color is white
@@ -64,7 +68,8 @@ public class ViewAssignmentsArrayAdapter extends BaseAdapter
     }
 
     @Override
-    public Object getItem(int position) {
+    public Object getItem(int position)
+    {
         List<AssignmentModel> assignments = SingletonSelectedClass.getInstance().getSelectedClass().getAssignments();
         return assignments.get(position).getName();
     }

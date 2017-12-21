@@ -2,7 +2,14 @@ package com.delware.classhub.Singletons;
 
 import com.delware.classhub.DatabaseObjs.ClassModel;
 
-public class SingletonSelectedClass {
+/**
+ * Overview: This class represents a single point of global access to the ClassModel
+ * the user chose to interact with on the HomeActivity. All of the activities in the Class Hub
+ * app interact with this class in order to access or modify the selected class' information.
+ * @author Matt Del Fante
+ */
+public class SingletonSelectedClass
+{
     private static SingletonSelectedClass m_instance = null;
     private ClassModel m_selectedClass;
 

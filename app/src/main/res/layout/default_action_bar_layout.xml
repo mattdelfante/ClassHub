@@ -9,8 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:id="@+id/viewAssignmentsActivityActionBarTitle"
-        android:text="Assignments"
+        android:id="@+id/defaultActionBarTitle"
+        android:text="Default Title"
         android:textColor="#ffffff"
         android:textSize="24sp" />
 </LinearLayout>

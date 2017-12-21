@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.delware.classhub.DatabaseObjs.AssignmentModel;
 import com.delware.classhub.R;
@@ -26,34 +27,39 @@ import com.delware.classhub.Singletons.SingletonWeekView;
 
 import java.util.Calendar;
 
-public class ClassActivity extends AppCompatActivity {
-
+/**
+ * Overview: This class allows users to navigate
+ * to other Activities so the user can create, view,
+ * edit, or delete assignments, audio recordings, video
+ * recording and/or notes from the class they are associated with.
+ * @author Matt Del Fante
+ */
+public class ClassActivity extends AppCompatActivity
+{
     private Context m_activityContext = this;
     private Dialog m_addAssignmentDialog = null;
 
-    /**
-     * Creates everything needed for the ClassActivity
-     * @param savedInstanceState the state of the application
-     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         //overwrite the action bar for this activity with a different one
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.activity_class_action_bar);
+        getSupportActionBar().setCustomView(R.layout.default_action_bar_layout);
 
         setContentView(R.layout.activity_class);
 
         //get the name of the class at make that the title of the page
-        TextView actionBarTextView = (TextView) findViewById(R.id.classActivityActionBarTitle);
+        TextView actionBarTextView = (TextView) findViewById(R.id.defaultActionBarTitle);
         actionBarTextView.setText(SingletonSelectedClass.getInstance().getSelectedClass().getName());
 
         createAddAssignmentOnClickDialog();
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
 
         if (m_addAssignmentDialog != null)
@@ -61,13 +67,13 @@ public class ClassActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onDestroy()
+    {
         super.onDestroy();
 
         if (m_addAssignmentDialog != null)
             m_addAssignmentDialog.dismiss();
     }
-
 
     /**
      * Creates the logic for what happens when clicking the Add Assignment button.
@@ -193,10 +199,8 @@ public class ClassActivity extends AppCompatActivity {
                 adBuilder.show();
             }
         });
-        //priority level stuff
 
         //notes logic
-        //if click on the edit text and have the default text in it, clear it out
         notesInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -226,7 +230,6 @@ public class ClassActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-        //notes stuff
 
         //cancel button stuff
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -238,27 +241,51 @@ public class ClassActivity extends AppCompatActivity {
                 asgnmtNameInput.setFocusable(true);
             }
         });
-        //cancel button stuff
 
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ADD TO THE VIEW ASSIGNMENTS PAGE
+                String toastMsg;
+                String assignmentName = newAssignment.getName();
 
-                //add the assignment to the database
-                newAssignment.save();
-                SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+                if (isUniqueAssignmentName(assignmentName))
+                {
+                    //add the assignment to the database
+                    newAssignment.save();
+                    SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
-                //Reset the activity while making the transition seamless
-                finish();
-                overridePendingTransition(0, 0);
-                startActivity(getIntent());
-                overridePendingTransition(0, 0);
+                    toastMsg = "The assignment: " + assignmentName + " was successfully added.";
+
+                    //Reset the activity while making the transition seamless
+                    finish();
+                    overridePendingTransition(0, 0);
+                    startActivity(getIntent());
+                    overridePendingTransition(0, 0);
+                }
+                else
+                    toastMsg = "This class already has an assignment with the name: " + assignmentName + ".";
+
+                Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
             }
         });
 
         //create the dialog
         m_addAssignmentDialog = dialog;
+    }
+
+    /**
+     * Determines weather or not the assignment has a unique name or not.
+     * @param name The name of the assignment.
+     * @return True if the name is unique, else false.
+     */
+    private boolean isUniqueAssignmentName(String name)
+    {
+        for (AssignmentModel model : SingletonSelectedClass.getInstance().getSelectedClass().getAssignments())
+        {
+            if (model.getName().equals(name))
+                return false;
+        }
+        return true;
     }
 
     /**

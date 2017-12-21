@@ -11,6 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:id="@+id/optionsText"
+        android:textColor="@color/black"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="Options"
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/renameClassText"
         android:text="Rename Class:"
+        android:textColor="@color/black"
         app:layout_marginLeftPercent="1%"
         android:layout_below="@+id/optionsText"
         android:layout_alignParentLeft="true"
@@ -41,10 +43,7 @@
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
         android:text="Archive the Class"
-        android:gravity="left|center_vertical"
-        app:layout_marginLeftPercent="1%"
         android:textAllCaps="false"
-        android:background="@android:color/transparent"
         android:layout_below="@+id/renameClassInput"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
@@ -55,9 +54,7 @@
         android:layout_height="wrap_content"
         android:text="Delete the Class"
         android:textAllCaps="false"
-        android:gravity="left|center_vertical"
-        app:layout_marginLeftPercent="1%"
-        android:background="@android:color/transparent"
+
         android:layout_below="@+id/archiveClassButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>

@@ -13,6 +13,7 @@
         android:id="@+id/addClassTitle"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:textColor="@color/black"
         android:text="Add Class"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -21,6 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/enterClassNameText"
+        android:textColor="@color/black"
         android:text="Please Enter the Class Name Below:"
         app:layout_marginLeftPercent="1%"
         android:layout_below="@+id/addClassTitle"
