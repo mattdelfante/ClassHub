@@ -44,6 +44,7 @@
         app:layout_heightPercent="15%"
         app:layout_marginTopPercent="62.5%"
         android:text="Video Recordings"
+        android:onClick="goToVideoRecordingsActivity"
         android:textAllCaps="false"
         android:textSize="20sp" />
 

@@ -33,6 +33,7 @@
         app:layout_heightPercent="20%"
         app:layout_marginTopPercent="40%"
         android:text="Audio Recordings"
+        android:onClick="goToAudioRecordingsActivity"
         android:textAllCaps="false"
         android:textSize="20sp" />
 
@@ -42,6 +43,7 @@
         app:layout_heightPercent="20%"
         app:layout_marginTopPercent="60%"
         android:text="Video Recordings"
+        android:onClick="goToVideoRecordingsActivity"
         android:textAllCaps="false"
         android:textSize="20sp" />
 

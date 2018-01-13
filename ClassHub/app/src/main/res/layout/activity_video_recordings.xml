@@ -3,20 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/audioRecordingsActivityPercentRelativeLayout"
+    android:id="@+id/videoRecordingsActivityPercentRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.delware.classhub.Activities.AudioRecordingsActivity">
+    tools:context="com.delware.classhub.Activities.VideoRecordingsActivity">
 
     <Button
         app:layout_widthPercent="95%"
         app:layout_heightPercent="47.5%"
         app:layout_marginTopPercent="2.5%"
         app:layout_marginLeftPercent="2.5%"
-        android:text="Start Audio Recording"
+        android:text="Start Video Recording"
         android:textSize="20sp"
-        android:id="@+id/startAudioRecordingButton"
-        android:onClick="goToRecordAudioActivity"
+        android:id="@+id/startVideoRecordingButton"
+        android:onClick="goToRecordVideoActivity"
         android:textAllCaps="false" />
 
     <Button
@@ -24,10 +24,9 @@
         app:layout_heightPercent="47.5%"
         app:layout_marginTopPercent="50%"
         app:layout_marginLeftPercent="2.5%"
-        android:text="View Audio Recordings"
-        android:onClick="goToViewAudioRecordingsActivity"
+        android:text="View Video Recordings"
+        android:onClick="goToViewVideoRecordingsActivity"
         android:textSize="20sp"
-        android:id="@+id/viewAudioRecordingsButton"
+        android:id="@+id/viewVideoRecordingsButton"
         android:textAllCaps="false" />
-
 </android.support.percent.PercentRelativeLayout>

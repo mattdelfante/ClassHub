@@ -320,4 +320,10 @@ public class ClassActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void goToVideoRecordingsActivity(View v)
+    {
+        Intent intent = new Intent(ClassActivity.this, VideoRecordingsActivity.class);
+        startActivity(intent);
+    }
+
 }

@@ -26,7 +26,7 @@
         app:layout_marginLeftPercent="50%"
         android:text="Finish Recording"
         android:textSize="20sp"
-        android:id="@+id/finishRecordingButton"
+        android:id="@+id/finishAudioRecordingButton"
         android:onClick="finishAudioRecording"
         android:textAllCaps="false" />
 

@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.delware.classhub.CustomAdapters.ViewAssignmentsArrayAdapter;
+import com.delware.classhub.OtherClasses.ViewAssignmentsArrayAdapter;
 import com.delware.classhub.DatabaseObjs.AssignmentModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
@@ -271,24 +271,6 @@ public class ViewAssignmentsActivity extends AppCompatActivity
 
         //additional notes stuff
         editAdditionalNotes.setText(m_selectedAssignment.getAdditionalNotes());
-        editAdditionalNotes.addTextChangedListener(new TextWatcher() {
-            //start off as a disabled done button
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String input = s.toString();
-                //not all whitespace or empty
-                if (input.trim().length() > 0)
-                    m_selectedAssignment.setAdditionalNotes(input);
-                else
-                    m_selectedAssignment.setAdditionalNotes("");
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
 
         //cancel button stuff
         viewAssignmentCancelButton.setOnClickListener(new View.OnClickListener() {
@@ -304,11 +286,13 @@ public class ViewAssignmentsActivity extends AppCompatActivity
             public void onClick(View v) {
                 String toastMsg;
                 String assignmentName = editAssignmentNameInput.getText().toString();
+                String additionalNotes = editAdditionalNotes.getText().toString();
 
                 //if the user didn't change the assignment name or the assignment name is unique
                 if (m_originalAssignmentName.equals(assignmentName) || isUniqueAssignmentName(assignmentName))
                 {
                     m_selectedAssignment.setName(assignmentName);
+                    m_selectedAssignment.setAdditionalNotes(additionalNotes);
 
                     //update the assignment in the database
                     m_selectedAssignment.save();

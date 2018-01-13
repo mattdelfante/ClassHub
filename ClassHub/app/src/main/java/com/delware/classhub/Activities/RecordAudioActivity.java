@@ -14,10 +14,8 @@ import android.widget.Toast;
 
 import com.coremedia.iso.boxes.Container;
 import com.delware.classhub.DatabaseObjs.AudioRecordingModel;
-import com.delware.classhub.DatabaseObjs.ClassModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
-import com.delware.classhub.Singletons.SingletonWeekView;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
@@ -150,18 +148,23 @@ public class RecordAudioActivity extends AppCompatActivity
      * Either allows an audio recording to be paused or resumed depending on what
      * context the method is called in.
      * @param view The view that invokes the method.
-     * @throws IOException if MediaRecorder operations fail.
      */
-    public void pauseContinueAudioRecordingHandler(View view) throws IOException {
+    public void pauseContinueAudioRecordingHandler(View view) {
         Button b = (Button) findViewById(R.id.pauseContinueAudioRecordingButton);
 
         //if audio recording is paused
         if (m_isPaused)
         {
             //start another audio recording
-            beginRecordingAudio();
-            b.setText("Pause Recording");
-            m_isPaused = false;
+            try{
+                beginRecordingAudio();
+                b.setText("Pause Recording");
+                m_isPaused = false;
+            } catch (IOException e) {
+                Toast.makeText(getApplicationContext(), "The audio recording was unable to continue.", Toast.LENGTH_SHORT).show();
+                Log.i("LOG: ", "The audio recording: was not able to be continued. Exception: " + e.getMessage());
+                finishAudioRecording(null);
+            }
         }
         else
         {

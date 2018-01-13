@@ -3,7 +3,12 @@
     package="com.delware.classhub">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- <uses-feature android:name="android.hardware.camera"/> -->
+    <!-- <uses-feature android:name="android.hardware.camera" android:required="true" /> -->
     <application
         android:name="com.activeandroid.app.Application"
         android:allowBackup="true"
@@ -17,10 +22,10 @@
             android:value="ClassHubDB.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="2" />
+            android:value="3" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.delware.classhub.DatabaseObjs.ClassModel, com.delware.classhub.DatabaseObjs.AssignmentModel, com.delware.classhub.DatabaseObjs.AudioRecordingModel" />
+            android:value="com.delware.classhub.DatabaseObjs.ClassModel, com.delware.classhub.DatabaseObjs.AssignmentModel,              com.delware.classhub.DatabaseObjs.AudioRecordingModel, com.delware.classhub.DatabaseObjs.VideoRecordingModel" />
         <meta-data
             android:name="AA_SERIALIZERS"
             android:value="com.delware.classhub.DatabaseTypeSerializers.UtilDateSerializer" />
@@ -37,7 +42,9 @@
         <activity android:name=".Activities.AudioRecordingsActivity" />
         <activity android:name=".Activities.RecordAudioActivity" />
         <activity android:name=".Activities.ViewAudioRecordingsActivity" />
-        <activity android:name=".Activities.PlayAudioRecordingActivity"></activity>
+        <activity android:name=".Activities.PlayAudioRecordingActivity" />
+        <activity android:name=".Activities.VideoRecordingsActivity" />
+        <activity android:name=".Activities.ViewVideoRecordingsActivity"></activity>
     </application>
 
 </manifest>

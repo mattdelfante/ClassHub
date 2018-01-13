@@ -62,6 +62,11 @@ public class ClassModel extends Model
         return getMany(AudioRecordingModel.class, "Class");
     }
 
+    public List<VideoRecordingModel> getVideoRecordings()
+    {
+        return getMany(VideoRecordingModel.class, "Class");
+    }
+
     /**
      *@return a list of all the ClassModels in the database.
      */
@@ -98,6 +103,7 @@ public class ClassModel extends Model
 
         deleteAssociatedAssignments(classModel);
         deleteAssociatedAudioRecordings(classModel, context);
+        deleteAssociatedVideoRecordings(classModel, context);
 
         //delete the class
         new Delete().from(ClassModel.class).where("Id = ?", classModel.getId()).execute();
@@ -141,6 +147,27 @@ public class ClassModel extends Model
 
             //delete the audio recording from the db
             new Delete().from(AudioRecordingModel.class).where("Id = ?", model.getId()).execute();
+        }
+    }
+
+    private static void deleteAssociatedVideoRecordings(ClassModel classModel, Context context)
+    {
+        List<VideoRecordingModel> videoRecordings = classModel.getVideoRecordings();
+
+        String uniquePrefix = classModel.getId() + "video";
+
+        String pathToVideoRecording = context.getFilesDir() + "/" + uniquePrefix + "_";
+
+        for (VideoRecordingModel model : videoRecordings)
+        {
+            File f = new File(pathToVideoRecording + model.getName() + ".mp4");
+
+            //delete the audio recording from internal storage
+            if (!f.delete())
+                Log.i("LOG: ", "The video recording: " + model.getName() + " was not deleted.");
+
+            //delete the audio recording from the db
+            new Delete().from(VideoRecordingModel.class).where("Id = ?", model.getId()).execute();
         }
     }
 

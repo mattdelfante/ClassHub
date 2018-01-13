@@ -485,6 +485,7 @@ public class HomeActivity extends AppCompatActivity
                 m_classes.remove(index);
                 m_classesListViewAdapter.notifyDataSetChanged();
 
+
                 //archive the class in the database
                 ClassModel.makeClassArchived(className);
                 //update the week view calendar

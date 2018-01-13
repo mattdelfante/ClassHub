@@ -1,4 +1,4 @@
-package com.delware.classhub.CustomAdapters;
+package com.delware.classhub.OtherClasses;
 
 import android.content.Context;
 import android.view.LayoutInflater;
