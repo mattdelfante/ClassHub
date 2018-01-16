@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!-- <uses-feature android:name="android.hardware.camera"/> -->
@@ -44,7 +44,8 @@
         <activity android:name=".Activities.ViewAudioRecordingsActivity" />
         <activity android:name=".Activities.PlayAudioRecordingActivity" />
         <activity android:name=".Activities.VideoRecordingsActivity" />
-        <activity android:name=".Activities.ViewVideoRecordingsActivity"></activity>
+        <activity android:name=".Activities.ViewVideoRecordingsActivity" />
+        <activity android:name=".Activities.PlayVideoRecordingActivity"></activity>
     </application>
 
 </manifest>

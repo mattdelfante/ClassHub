@@ -8,11 +8,17 @@
     android:id="@+id/viewVideoRecordings"
     tools:context="com.delware.classhub.Activities.ViewVideoRecordingsActivity">
 
-    <VideoView
-        android:id="@+id/videoViewPlayBack"
+    <ListView
+        android:id="@+id/videoRecordingsListView"
         app:layout_widthPercent="100%"
-        app:layout_heightPercent="100%"
-        android:layout_centerHorizontal="true"/>
+        app:layout_heightPercent="100%" />
+
+    <!--<VideoView-->
+        <!--android:id="@+id/videoViewPlayBack"-->
+        <!--app:layout_widthPercent="100%"-->
+        <!--app:layout_heightPercent="100%"-->
+        <!--android:layout_centerHorizontal="true"/>-->
+
 </android.support.percent.PercentRelativeLayout>
 
 

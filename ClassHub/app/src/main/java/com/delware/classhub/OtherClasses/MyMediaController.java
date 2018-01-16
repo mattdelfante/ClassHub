@@ -1,23 +1,19 @@
 package com.delware.classhub.OtherClasses;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
 
 import com.delware.classhub.R;
 
-/**
- * Created by Matt on 1/11/2018.
- */
-
-public class MyMediaController extends MediaController {
-
+public class MyMediaController extends MediaController
+{
+    //The context of the calling activity
     private Context m_context = null;
 
     public MyMediaController(Context context, AttributeSet attrs) {
@@ -39,45 +35,46 @@ public class MyMediaController extends MediaController {
     public void setAnchorView(View view) {
         super.setAnchorView(view);
 
-//        Button searchButton = new Button(m_context);
-//        searchButton.setText(" ");
-//        searchButton.setBackgroundColor(Color);
-//        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//        params.gravity = Gravity.RIGHT;
-//        addView(searchButton, params);
+        //This will find the id of the Class Hub App Logo so I can use it in the MediaController
+        //control panel
+        int id = getResources().getIdentifier("ic_launcher", "mipmap", m_context.getPackageName());
 
         ImageView appIcon = new ImageView(getContext());
-        appIcon.setImageResource(android.R.mipmap.sym_def_app_icon);
+        appIcon.setImageResource(id);
+
         float padding = getResources().getDimension(R.dimen.fab_margin);
 
         appIcon.setPadding((int) padding, (int) padding / 2, (int) padding, (int) padding / 2);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+        //put the app icon on the left side of the control panel
         params.gravity = Gravity.START;
+
+        //add the app icon to the control panel
         addView(appIcon, params);
 
-        ImageView closeButton = new ImageView(getContext());
-        closeButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-        closeButton.setColorFilter(Color.RED);
-        padding = getResources().getDimension(R.dimen.fab_margin);
-        closeButton.setPadding((int) padding, (int) padding, (int) padding, (int) padding);
-        params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        //This will find the id of the back arrow so I can use it in the MediaController
+        //control panel
+        id = getResources().getIdentifier("ic_arrow_back", "drawable", m_context.getPackageName());
+
+        ImageView backArrow = new ImageView(getContext());
+        backArrow.setImageResource(id);
+        backArrow.setColorFilter(Color.WHITE);
+        backArrow.setPadding((int) padding, (int) padding, (int) padding * 2, (int) padding);
+        params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+        //put the app icon on the right side of the control panel
         params.gravity = Gravity.END;
-        addView(closeButton, params);
-        closeButton.setOnClickListener(new OnClickListener() {
+
+        //add the back arrow to the control panel
+        addView(backArrow, params);
+
+        //makes it so the activity will close when the back arrow is pressed
+        backArrow.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                player.finish();
+                ((Activity) m_context).finish();
             }
         });
     }
-
-    //    @Override
-//    public void show(int timeout) {
-//        super.show(0);
-//    }
-//
-//    @Override
-//    public void hide() {
-//        super.hide();
-//    }
 }

@@ -61,7 +61,7 @@ public class VideoRecordingsActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_VIDEO && resultCode == RESULT_OK)
         {
-            String toastMsg = "The video recording was successfully saved!";
+            String toastMsg;
             String timeStamp = new SimpleDateFormat("MM-dd-yyyy_HHmmss").format(Calendar.getInstance().getTime());
             String uniquePrefix = SingletonSelectedClass.getInstance().getSelectedClass().getId() + "video";
             String fileName =  "/" + uniquePrefix + "_" + timeStamp + ".mp4";
@@ -139,7 +139,6 @@ public class VideoRecordingsActivity extends AppCompatActivity {
         try {
             String[] proj = { MediaStore.Video.Media.DATA };
             cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            //int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
