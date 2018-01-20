@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.delware.classhub.DatabaseObjs.VideoRecordingModel;
+import com.delware.classhub.DatabaseModels.VideoRecordingModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 
@@ -25,6 +25,11 @@ import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/**
+ * Overview: This class provides the choice for the user to either create a
+ * video recording or view previously created video recordings.
+ * @author Matt Del Fante
+ */
 public class VideoRecordingsActivity extends AppCompatActivity {
 
     final private int REQUEST_VIDEO = 0;
@@ -45,7 +50,8 @@ public class VideoRecordingsActivity extends AppCompatActivity {
     }
 
     /**
-     * Navigates the user to the RecordVideoActivity so the user can create an video recording.
+     * Allows the user to use the native video app on his or her android device to make a
+     * video recording.
      * @param v The calling View.
      */
     public void goToRecordVideoActivity(View v)
@@ -55,10 +61,17 @@ public class VideoRecordingsActivity extends AppCompatActivity {
         startActivityForResult(callVideoAppIntent, REQUEST_VIDEO);
     }
 
+    /**
+     * This method determines what happens the onActivityResult function is called.
+     * @param requestCode The request of the activity.
+     * @param resultCode The result of the activity.
+     * @param data The return value from the activity.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        //if the user just finished creating the video recording
         if (requestCode == REQUEST_VIDEO && resultCode == RESULT_OK)
         {
             String toastMsg;
@@ -66,12 +79,14 @@ public class VideoRecordingsActivity extends AppCompatActivity {
             String uniquePrefix = SingletonSelectedClass.getInstance().getSelectedClass().getId() + "video";
             String fileName =  "/" + uniquePrefix + "_" + timeStamp + ".mp4";
 
+            //get the uri of the video recording
             Uri uri = data.getData();
-            String oldFileName = getRealPathFromUri(getApplicationContext(), uri);
+            String oldFilePath = getRealPathFromUri(getApplicationContext(), uri);
 
-            File oldFile = new File(oldFileName);
+            File oldFile = new File(oldFilePath);
             File newFile = new File(getFilesDir() + fileName);
 
+            //transfer the video file from the camera app to internal storage of the app
             if (transferFileToInternalStorage(oldFile, newFile))
             {
                 VideoRecordingModel model = new VideoRecordingModel();
@@ -91,6 +106,13 @@ public class VideoRecordingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Transfers a .mp4 file from the android device's native camera app to the internal storage
+     * of Class Hub.
+     * @param src The path of the .mp4 file in internal storage.
+     * @param dest The path to internal storage where the .mp4 file will be stored.
+     * @return True on successful transfer, else false.
+     */
     private static boolean transferFileToInternalStorage(File src, File dest)
     {
         boolean returnVal = false;
@@ -134,6 +156,13 @@ public class VideoRecordingsActivity extends AppCompatActivity {
         return returnVal;
     }
 
+    /**
+     * This method determines the physical file path of a .mp4 file that was saved to the native
+     * camera app of the android device from a URI.
+     * @param context The application's context
+     * @param contentUri The uri of the .mp4 file.
+     * @return The physical file path of the .mp4 file.
+     */
     private static String getRealPathFromUri(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {

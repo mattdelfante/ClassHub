@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.delware.classhub.DatabaseObjs.AudioRecordingModel;
+import com.delware.classhub.DatabaseModels.AudioRecordingModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 
@@ -89,7 +89,7 @@ public class ViewAudioRecordingsActivity extends AppCompatActivity
     }
 
     /**
-     * Initializes the actions of the Classes list view in the app
+     * Initializes the actions of the Audio Recordings list view in the app
      */
     private void initializeListView() {
 

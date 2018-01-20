@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/createNoteActivityPercentRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.delware.classhub.Activities.CreateNoteActivity">
+
+    <EditText
+        android:id="@+id/createNoteField"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="90%"
+        android:gravity="top|left"
+        android:background="@android:color/transparent" />
+
+    <Button
+        android:id="@+id/cancelNoteButton"
+        app:layout_widthPercent="50%"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:layout_below="@+id/createNoteField"/>
+
+    <Button
+        android:id="@+id/saveNoteButton"
+        app:layout_widthPercent="50%"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:enabled="false"
+        app:layout_marginLeftPercent="50%"
+        android:textAllCaps="false"
+        android:layout_below="@+id/createNoteField"/>
+</android.support.percent.PercentRelativeLayout>

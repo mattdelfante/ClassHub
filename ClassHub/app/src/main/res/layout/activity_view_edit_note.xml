@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewEditNoteActivityPercentRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.delware.classhub.Activities.ViewEditNoteActivity">
+
+    <EditText
+        android:id="@+id/editNoteField"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="90%"
+        android:gravity="top|left"
+        android:background="@android:color/transparent" />
+
+    <Button
+        android:id="@+id/discardEditsButton"
+        app:layout_widthPercent="50%"
+        android:layout_height="wrap_content"
+        android:text="Discard Edits"
+        android:textAllCaps="false"
+        android:layout_below="@+id/editNoteField"/>
+
+    <Button
+        android:id="@+id/saveEditsButton"
+        app:layout_widthPercent="50%"
+        android:layout_height="wrap_content"
+        android:text="Save Edits"
+        app:layout_marginLeftPercent="50%"
+        android:textAllCaps="false"
+        android:layout_below="@+id/editNoteField"/>
+</android.support.percent.PercentRelativeLayout>

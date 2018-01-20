@@ -6,7 +6,7 @@
     android:id="@+id/classActivityMainPercentRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.delware.classhub.Activities.HomeActivity">
+    tools:context="com.delware.classhub.Activities.ClassActivity">
 
     <Button
         android:id="@+id/addAssignmentButton"
@@ -53,6 +53,7 @@
         app:layout_heightPercent="20%"
         app:layout_marginTopPercent="80%"
         android:text="Notes"
+        android:onClick="goToNotesActivity"
         android:textAllCaps="false"
         android:textSize="20sp" />
 

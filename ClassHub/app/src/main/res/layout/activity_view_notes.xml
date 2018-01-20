@@ -5,13 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/viewVideoRecordings"
-    tools:context="com.delware.classhub.Activities.ViewVideoRecordingsActivity">
+    android:id="@+id/viewNotesPercentRelativeLayout"
+    tools:context="com.delware.classhub.Activities.ViewNotesActivity">
 
     <ListView
-        android:id="@+id/videoRecordingsListView"
+        android:id="@+id/notesListView"
         app:layout_widthPercent="100%"
         app:layout_heightPercent="100%" />
 </android.support.percent.PercentRelativeLayout>
-
-

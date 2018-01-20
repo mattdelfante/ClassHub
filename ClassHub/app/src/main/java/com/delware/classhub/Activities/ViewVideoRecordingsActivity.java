@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.delware.classhub.DatabaseObjs.VideoRecordingModel;
+import com.delware.classhub.DatabaseModels.VideoRecordingModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 
@@ -28,11 +28,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Overview: This class allows users to interact with existing video recordings
+ * associated with a particular class..
+ * @author Matt Del Fante
+ */
 public class ViewVideoRecordingsActivity extends AppCompatActivity
 {
     //current activity context
     private final Context m_activityContext = this;
 
+    //the list of Video Recordings associated with the selected class
     private List<VideoRecordingModel> m_videoRecordings = null;
 
     //dialog box that pops up when an audio recording is pressed
@@ -82,6 +88,9 @@ public class ViewVideoRecordingsActivity extends AppCompatActivity
             m_renameVideoRecordingDialog.dismiss();
     }
 
+    /**
+     * Initializes the actions of the Video Recordings list view in the app.
+     */
     private void initializeListView()
     {
         List<String> videoRecordingNames = new ArrayList<>();
@@ -107,6 +116,11 @@ public class ViewVideoRecordingsActivity extends AppCompatActivity
         );
     }
 
+    /**
+     * Creates a dialog box for when an video recording list view element is clicked.
+     * The dialog box allows users to play, rename and delete video recordings
+     * @param index the index of the list view item that was selected.
+     */
     private void createDialogBoxForClickingRecording(int index)
     {
         //The AudioRecordingModel that is associated with the audio recording that was selected.
@@ -191,6 +205,11 @@ public class ViewVideoRecordingsActivity extends AppCompatActivity
         m_videoRecordingDialog = dialog;
     }
 
+    /**
+     * Creates a dialog box that allows a user to rename an video recording
+     * @param selectedRecording the VideoRecordingModel that is going to be renamed
+     * @param pathToRecordingOldName the path to the old-named video recording in internal storage
+     */
     private void createRenameVideoRecordingDialog(final VideoRecordingModel selectedRecording, final String pathToRecordingOldName)
     {
         final Dialog dialog = new Dialog(m_activityContext);

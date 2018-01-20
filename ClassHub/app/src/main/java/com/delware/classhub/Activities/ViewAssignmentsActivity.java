@@ -22,7 +22,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.delware.classhub.OtherClasses.ViewAssignmentsArrayAdapter;
-import com.delware.classhub.DatabaseObjs.AssignmentModel;
+import com.delware.classhub.DatabaseModels.AssignmentModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 import com.delware.classhub.Singletons.SingletonWeekView;

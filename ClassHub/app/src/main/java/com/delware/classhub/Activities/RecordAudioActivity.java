@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coremedia.iso.boxes.Container;
-import com.delware.classhub.DatabaseObjs.AudioRecordingModel;
+import com.delware.classhub.DatabaseModels.AudioRecordingModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 import com.googlecode.mp4parser.authoring.Movie;

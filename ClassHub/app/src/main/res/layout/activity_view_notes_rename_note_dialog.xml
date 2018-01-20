@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activityViewNotesRenameNoteDialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/renameNoteTitle"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:text="Rename Note"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/renameNoteInput"
+        app:layout_widthPercent="100%"
+        android:layout_height="wrap_content"
+        android:inputType="textCapSentences|textAutoCorrect"
+        android:layout_below="@+id/renameNoteTitle"
+        android:textColor="@color/black"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/renameNoteCancelButton"
+        app:layout_widthPercent="50%"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:layout_below="@+id/renameNoteInput"/>
+
+    <Button
+        android:id="@+id/renameNoteDoneButton"
+        app:layout_widthPercent="50%"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:enabled="false"
+        app:layout_marginLeftPercent="50%"
+        android:textAllCaps="false"
+        android:layout_below="@+id/renameNoteInput"/>
+</android.support.percent.PercentRelativeLayout>

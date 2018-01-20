@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,14 +27,12 @@ import com.activeandroid.ActiveAndroid;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
-import com.delware.classhub.DatabaseObjs.AssignmentModel;
-import com.delware.classhub.DatabaseObjs.AudioRecordingModel;
-import com.delware.classhub.DatabaseObjs.ClassModel;
+import com.delware.classhub.DatabaseModels.AssignmentModel;
+import com.delware.classhub.DatabaseModels.ClassModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 import com.delware.classhub.Singletons.SingletonWeekView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -68,9 +65,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //deletes the database
-        //this.deleteDatabase("ClassHubDB");
 
         //initialize the database
         ActiveAndroid.initialize(this);

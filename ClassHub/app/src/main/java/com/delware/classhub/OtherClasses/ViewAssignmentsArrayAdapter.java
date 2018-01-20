@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.delware.classhub.DatabaseObjs.AssignmentModel;
+import com.delware.classhub.DatabaseModels.AssignmentModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 
@@ -20,7 +20,10 @@ import java.util.List;
  */
 public class ViewAssignmentsArrayAdapter extends BaseAdapter
 {
+    //Context of the activity that uses this object
     Context m_ctx = null;
+
+    //Layout inflater service
     LayoutInflater m_lInflater = null;
 
     public ViewAssignmentsArrayAdapter(Context context)
@@ -58,8 +61,7 @@ public class ViewAssignmentsArrayAdapter extends BaseAdapter
 
     @Override
     public int getCount() {
-        List<AssignmentModel> assignments = SingletonSelectedClass.getInstance().getSelectedClass().getAssignments();
-        return assignments.size();
+        return SingletonSelectedClass.getInstance().getSelectedClass().getAssignments().size();
     }
 
     @Override

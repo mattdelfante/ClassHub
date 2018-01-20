@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.delware.classhub.DatabaseObjs.AssignmentModel;
+import com.delware.classhub.DatabaseModels.AssignmentModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
 import com.delware.classhub.Singletons.SingletonWeekView;
@@ -326,4 +326,8 @@ public class ClassActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void goToNotesActivity(View view) {
+        Intent intent = new Intent(ClassActivity.this, NotesActivity.class);
+        startActivity(intent);
+    }
 }

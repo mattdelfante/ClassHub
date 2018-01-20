@@ -1,6 +1,6 @@
 package com.delware.classhub.Singletons;
 
-import com.delware.classhub.DatabaseObjs.ClassModel;
+import com.delware.classhub.DatabaseModels.ClassModel;
 
 /**
  * Overview: This class represents a single point of global access to the ClassModel

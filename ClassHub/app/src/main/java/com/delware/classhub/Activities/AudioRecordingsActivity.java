@@ -38,7 +38,7 @@ public class AudioRecordingsActivity extends AppCompatActivity {
     }
 
     /**
-     * Navigates the user to the RecordAudioActivity so the user can create and audio recording.
+     * Navigates the user to the RecordAudioActivity so the user can create an audio recording.
      * @param v The calling View.
      */
     public void goToRecordAudioActivity(View v)

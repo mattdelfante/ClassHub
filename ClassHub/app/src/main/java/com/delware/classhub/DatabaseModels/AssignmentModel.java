@@ -1,4 +1,4 @@
-package com.delware.classhub.DatabaseObjs;
+package com.delware.classhub.DatabaseModels;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;

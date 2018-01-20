@@ -1,4 +1,4 @@
-package com.delware.classhub.DatabaseObjs;
+package com.delware.classhub.DatabaseModels;
 import android.content.Context;
 import android.util.Log;
 
@@ -23,7 +23,6 @@ public class ClassModel extends Model
     @Column(name = "Name")
     private String m_name;
 
-    //booleans get serialized to ints, 0 means false, 1 means true
     @Column(name = "IsArchived")
     private Boolean m_isArchived;
 
@@ -62,9 +61,20 @@ public class ClassModel extends Model
         return getMany(AudioRecordingModel.class, "Class");
     }
 
+    /**
+     * @return a list of VideoRecordingModels that are associated with the calling ClassModel.
+     */
     public List<VideoRecordingModel> getVideoRecordings()
     {
         return getMany(VideoRecordingModel.class, "Class");
+    }
+
+    /**
+     * @return a list of NoteModel that are associated with the calling ClassModel.
+     */
+    public List<NoteModel> getNotes()
+    {
+        return getMany(NoteModel.class, "Class");
     }
 
     /**
@@ -104,6 +114,7 @@ public class ClassModel extends Model
         deleteAssociatedAssignments(classModel);
         deleteAssociatedAudioRecordings(classModel, context);
         deleteAssociatedVideoRecordings(classModel, context);
+        deleteAssociatedNotes(classModel);
 
         //delete the class
         new Delete().from(ClassModel.class).where("Id = ?", classModel.getId()).execute();
@@ -124,8 +135,8 @@ public class ClassModel extends Model
     }
 
     /**
-     * Deletes all of the AudioRecordingModel objects and VideoRecordingModel objects
-     * that are associated with the class model that is going to be deleted.
+     * Deletes all of the AudioRecordingModel objects that are associated with the class model that
+     * is going to be deleted.
      * @param classModel the class that is getting deleted.
      * @param context the context of the activity that called the method.
      */
@@ -150,6 +161,12 @@ public class ClassModel extends Model
         }
     }
 
+    /**
+     * Deletes all of the VideoRecordingModel objects that are associated with the class model that
+     * is going to be deleted.
+     * @param classModel the class that is getting deleted.
+     * @param context the context of the activity that called the method.
+     */
     private static void deleteAssociatedVideoRecordings(ClassModel classModel, Context context)
     {
         List<VideoRecordingModel> videoRecordings = classModel.getVideoRecordings();
@@ -169,6 +186,18 @@ public class ClassModel extends Model
             //delete the audio recording from the db
             new Delete().from(VideoRecordingModel.class).where("Id = ?", model.getId()).execute();
         }
+    }
+
+    /**
+     * Deletes all of the NoteModel objects that are associated with the class model that
+     * is going to be deleted.
+     * @param classModel the class that is getting deleted.
+     */
+    private static void deleteAssociatedNotes(ClassModel classModel) {
+        List<NoteModel> notes = classModel.getNotes();
+
+        for (NoteModel model : notes)
+            new Delete().from(NoteModel.class).where("Id = ?", model.getId()).execute();
     }
 
     /**

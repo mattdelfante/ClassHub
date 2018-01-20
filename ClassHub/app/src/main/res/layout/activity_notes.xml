@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notesActivityPercentRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.delware.classhub.Activities.NotesActivity">
+
+    <Button
+        app:layout_widthPercent="95%"
+        app:layout_heightPercent="47.5%"
+        app:layout_marginTopPercent="2.5%"
+        app:layout_marginLeftPercent="2.5%"
+        android:text="Create a Note"
+        android:textSize="20sp"
+        android:id="@+id/createNoteButton"
+        android:onClick="goToCreateNoteActivity"
+        android:textAllCaps="false" />
+
+    <Button
+        app:layout_widthPercent="95%"
+        app:layout_heightPercent="47.5%"
+        app:layout_marginTopPercent="50%"
+        app:layout_marginLeftPercent="2.5%"
+        android:text="View Notes"
+        android:onClick="goToViewNotesActivity"
+        android:textSize="20sp"
+        android:id="@+id/viewNotesButton"
+        android:textAllCaps="false" />
+</android.support.percent.PercentRelativeLayout>
