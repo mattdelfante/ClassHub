@@ -131,12 +131,16 @@ public class ViewVideoRecordingsActivity extends AppCompatActivity
         final String pathToRecording = getFilesDir() + "/" + uniquePrefix + "_" + selectedRecording.getName() + ".mp4";
 
         final Dialog dialog = new Dialog(m_activityContext);
-        dialog.setContentView(R.layout.activity_view_video_recordings_dialog);
+        dialog.setContentView(R.layout.options_dialog);
 
         //all the components in the dialog box
-        final Button playVideoRecordingButton = (Button) dialog.findViewById(R.id.playVideoRecordingButton);
-        final Button renameVideoRecordingButton = (Button) dialog.findViewById(R.id.renameVideoRecordingButton);
-        final Button deleteVideoRecordingButton = (Button) dialog.findViewById(R.id.deleteVideoRecordingButton);
+        final Button playVideoRecordingButton = (Button) dialog.findViewById(R.id.optionsButtonOne);
+        final Button renameVideoRecordingButton = (Button) dialog.findViewById(R.id.optionsButtonTwo);
+        final Button deleteVideoRecordingButton = (Button) dialog.findViewById(R.id.optionsButtonThree);
+
+        playVideoRecordingButton.setText("Play Video Recording");
+        renameVideoRecordingButton.setText("Rename Video Recording");
+        deleteVideoRecordingButton.setText("Delete Video Recording");
 
         playVideoRecordingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,12 +217,14 @@ public class ViewVideoRecordingsActivity extends AppCompatActivity
     private void createRenameVideoRecordingDialog(final VideoRecordingModel selectedRecording, final String pathToRecordingOldName)
     {
         final Dialog dialog = new Dialog(m_activityContext);
-        dialog.setContentView(R.layout.activity_view_video_recordings_rename_recording_dialog);
+        dialog.setContentView(R.layout.rename_dialog);
+
+        ((TextView) dialog.findViewById(R.id.renameTitle)).setText("Rename Video Recording");
 
         //all the components in the dialog box
-        final EditText input = (EditText) dialog.findViewById(R.id.renameVideoRecordingInput);
-        final Button doneButton = (Button) dialog.findViewById(R.id.renameVideoRecordingDoneButton);
-        final Button cancelButton = (Button) dialog.findViewById(R.id.renameVideoRecordingCancelButton);
+        final EditText input = (EditText) dialog.findViewById(R.id.renameInput);
+        final Button doneButton = (Button) dialog.findViewById(R.id.renameDoneButton);
+        final Button cancelButton = (Button) dialog.findViewById(R.id.renameCancelButton);
 
         input.setText(selectedRecording.getName());
 

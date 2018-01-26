@@ -131,12 +131,16 @@ public class ViewAudioRecordingsActivity extends AppCompatActivity
         final String pathToRecording = getFilesDir() + "/" + uniquePrefix + "_" + selectedRecording.getName() + ".mp4";
 
         final Dialog dialog = new Dialog(m_activityContext);
-        dialog.setContentView(R.layout.activity_view_audio_recordings_dialog);
+        dialog.setContentView(R.layout.options_dialog);
 
         //all the components in the dialog box
-        final Button playAudioRecordingButton = (Button) dialog.findViewById(R.id.playAudioRecordingButton);
-        final Button renameAudioRecordingButton = (Button) dialog.findViewById(R.id.renameAudioRecordingButton);
-        final Button deleteAudioRecordingButton = (Button) dialog.findViewById(R.id.deleteAudioRecordingButton);
+        final Button playAudioRecordingButton = (Button) dialog.findViewById(R.id.optionsButtonOne);
+        final Button renameAudioRecordingButton = (Button) dialog.findViewById(R.id.optionsButtonTwo);
+        final Button deleteAudioRecordingButton = (Button) dialog.findViewById(R.id.optionsButtonThree);
+
+        playAudioRecordingButton.setText("Play Audio Recording");
+        renameAudioRecordingButton.setText("Rename Audio Recording");
+        deleteAudioRecordingButton.setText("Delete Audio Recording");
 
         playAudioRecordingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,12 +217,14 @@ public class ViewAudioRecordingsActivity extends AppCompatActivity
     private void createRenameAudioRecordingDialog(final AudioRecordingModel selectedRecording, final String pathToRecordingOldName)
     {
         final Dialog dialog = new Dialog(m_activityContext);
-        dialog.setContentView(R.layout.activity_view_audio_recordings_rename_recording_dialog);
+        dialog.setContentView(R.layout.rename_dialog);
+
+        ((TextView) dialog.findViewById(R.id.renameTitle)).setText("Rename Audio Recording");
 
         //all the components in the dialog box
-        final EditText input = (EditText) dialog.findViewById(R.id.renameAudioRecordingInput);
-        final Button doneButton = (Button) dialog.findViewById(R.id.renameAudioRecordingDoneButton);
-        final Button cancelButton = (Button) dialog.findViewById(R.id.renameAudioRecordingCancelButton);
+        final EditText input = (EditText) dialog.findViewById(R.id.renameInput);
+        final Button doneButton = (Button) dialog.findViewById(R.id.renameDoneButton);
+        final Button cancelButton = (Button) dialog.findViewById(R.id.renameCancelButton);
 
         input.setText(selectedRecording.getName());
 

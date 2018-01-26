@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/activityViewVideoRecordingsDialog">
+    android:id="@+id/optionsDialog">
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,32 +18,29 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:id="@+id/playVideoRecordingButton"
+        android:id="@+id/optionsButtonOne"
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
-        android:text="Play Video Recording"
         android:textAllCaps="false"
         android:layout_below="@+id/optionsTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
     <Button
-        android:id="@+id/renameVideoRecordingButton"
+        android:id="@+id/optionsButtonTwo"
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
-        android:text="Rename Video Recording"
         android:textAllCaps="false"
-        android:layout_below="@+id/playVideoRecordingButton"
+        android:layout_below="@+id/optionsButtonOne"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
     <Button
-        android:id="@+id/deleteVideoRecordingButton"
+        android:id="@+id/optionsButtonThree"
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
-        android:text="Delete Video Recording"
         android:textAllCaps="false"
-        android:layout_below="@+id/renameVideoRecordingButton"
+        android:layout_below="@+id/optionsButtonTwo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 </android.support.percent.PercentRelativeLayout>

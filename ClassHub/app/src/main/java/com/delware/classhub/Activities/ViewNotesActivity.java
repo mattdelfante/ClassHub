@@ -123,11 +123,15 @@ public class ViewNotesActivity extends AppCompatActivity {
     {
         final NoteModel selectedNote = m_notes.get(index);
         final Dialog dialog = new Dialog(m_activityContext);
-        dialog.setContentView(R.layout.activity_view_notes_dialog);
+        dialog.setContentView(R.layout.options_dialog);
 
-        final Button viewEditNoteButton = (Button) dialog.findViewById(R.id.viewEditNoteButton);
-        final Button renameNoteButton = (Button) dialog.findViewById(R.id.renameNoteButton);
-        final Button deleteNoteButton = (Button) dialog.findViewById(R.id.deleteNoteButton);
+        final Button viewEditNoteButton = (Button) dialog.findViewById(R.id.optionsButtonOne);
+        final Button renameNoteButton = (Button) dialog.findViewById(R.id.optionsButtonTwo);
+        final Button deleteNoteButton = (Button) dialog.findViewById(R.id.optionsButtonThree);
+
+        viewEditNoteButton.setText("View/Edit Note");
+        renameNoteButton.setText("Rename Note");
+        deleteNoteButton.setText("Delete Note");
 
         viewEditNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,12 +200,14 @@ public class ViewNotesActivity extends AppCompatActivity {
     private void createRenameNoteDialog(final NoteModel selectedNote)
     {
         final Dialog dialog = new Dialog(m_activityContext);
-        dialog.setContentView(R.layout.activity_view_notes_rename_note_dialog);
+        dialog.setContentView(R.layout.rename_dialog);
+
+        ((TextView) dialog.findViewById(R.id.renameTitle)).setText("Rename Note");
 
         //all the components in the dialog box
-        final EditText input = (EditText) dialog.findViewById(R.id.renameNoteInput);
-        final Button doneButton = (Button) dialog.findViewById(R.id.renameNoteDoneButton);
-        final Button cancelButton = (Button) dialog.findViewById(R.id.renameNoteCancelButton);
+        final EditText input = (EditText) dialog.findViewById(R.id.renameInput);
+        final Button doneButton = (Button) dialog.findViewById(R.id.renameDoneButton);
+        final Button cancelButton = (Button) dialog.findViewById(R.id.renameCancelButton);
 
         input.setText(selectedNote.getName());
 

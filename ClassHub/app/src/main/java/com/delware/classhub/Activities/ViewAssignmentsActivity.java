@@ -37,7 +37,6 @@ import java.util.List;
  */
 public class ViewAssignmentsActivity extends AppCompatActivity
 {
-
     private final Context m_activityContext = this;
     private Dialog m_assignmentDialog = null;
     private AssignmentModel m_selectedAssignment = null;

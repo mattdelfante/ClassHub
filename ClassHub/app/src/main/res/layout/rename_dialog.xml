@@ -2,45 +2,44 @@
 <android.support.percent.PercentRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activityViewVideoRecordingsRenameRecordingDialog"
+    android:id="@+id/renameDialog"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
         android:layout_width="wrap_content"
-        android:id="@+id/renameVideoRecordingTitle"
+        android:id="@+id/renameTitle"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="@color/black"
-        android:text="Rename Video Recording"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <EditText
-        android:id="@+id/renameVideoRecordingInput"
+        android:id="@+id/renameInput"
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
         android:inputType="textCapSentences|textAutoCorrect"
-        android:layout_below="@+id/renameVideoRecordingTitle"
+        android:layout_below="@+id/renameTitle"
         android:textColor="@color/black"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <Button
-        android:id="@+id/renameVideoRecordingCancelButton"
+        android:id="@+id/renameCancelButton"
         app:layout_widthPercent="50%"
         android:layout_height="wrap_content"
         android:text="Cancel"
         android:textAllCaps="false"
-        android:layout_below="@+id/renameVideoRecordingInput"/>
+        android:layout_below="@+id/renameInput"/>
 
     <Button
-        android:id="@+id/renameVideoRecordingDoneButton"
+        android:id="@+id/renameDoneButton"
         app:layout_widthPercent="50%"
         android:layout_height="wrap_content"
         android:text="Done"
         android:enabled="false"
         app:layout_marginLeftPercent="50%"
         android:textAllCaps="false"
-        android:layout_below="@+id/renameVideoRecordingInput"/>
+        android:layout_below="@+id/renameInput"/>
 </android.support.percent.PercentRelativeLayout>
