@@ -8,11 +8,28 @@
     android:id="@+id/recordAudioActivityPercentRelativeLayout"
     tools:context="com.delware.classhub.Activities.RecordAudioActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timerValue"
+        android:text="00:00:00"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        android:gravity="center"
+        app:layout_marginLeftPercent="30%"
+        app:layout_marginTopPercent="5%"
+        />
+
+    <pl.droidsonroids.gif.GifImageView
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="30%"
+        android:id="@+id/recordAudioGif"
+        app:layout_marginTopPercent="30%"/>
+
     <Button
-        app:layout_widthPercent="47.5%"
+        app:layout_widthPercent="50%"
         app:layout_heightPercent="20%"
-        app:layout_marginTopPercent="35%"
-        app:layout_marginLeftPercent="2.5%"
+        app:layout_marginTopPercent="80%"
         android:text="Pause Recording"
         android:textSize="20sp"
         android:id="@+id/pauseContinueAudioRecordingButton"
@@ -20,9 +37,9 @@
         android:textAllCaps="false" />
 
     <Button
-        app:layout_widthPercent="47.5%"
+        app:layout_widthPercent="50%"
         app:layout_heightPercent="20%"
-        app:layout_marginTopPercent="35%"
+        app:layout_marginTopPercent="80%"
         app:layout_marginLeftPercent="50%"
         android:text="Finish Recording"
         android:textSize="20sp"

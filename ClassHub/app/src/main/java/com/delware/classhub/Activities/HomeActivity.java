@@ -4,12 +4,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.RectF;
+import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
@@ -214,19 +214,20 @@ public class HomeActivity extends AppCompatActivity
         switch (asgnmt.getPriorityLevel())
         {
             case 1:
-                assignment.setColor(Color.BLUE);
+                //ResourcesCompat.getColor(getResources(), R.color.blue, null);
+                assignment.setColor(ResourcesCompat.getColor(getResources(), R.color.blue, null));
                 break;
             case 2:
-                assignment.setColor(Color.YELLOW);
+                assignment.setColor(ResourcesCompat.getColor(getResources(), R.color.yellow, null));
                 break;
             case 3:
-                assignment.setColor(Color.RED);
+                assignment.setColor(ResourcesCompat.getColor(getResources(), R.color.red, null));
                 break;
             case 4:
-                assignment.setColor(Color.GREEN);
+                assignment.setColor(ResourcesCompat.getColor(getResources(), R.color.green, null));
                 break;
             default:
-                assignment.setColor(Color.BLUE);
+                assignment.setColor(ResourcesCompat.getColor(getResources(), R.color.blue, null));
                 break;
         }
 

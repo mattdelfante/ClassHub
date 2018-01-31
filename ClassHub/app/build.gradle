@@ -32,5 +32,6 @@ dependencies {
     compile 'com.android.support:percent:25.3.1'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.googlecode.mp4parser:isoparser:1.1.21'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.10'
     testCompile 'junit:junit:4.12'
 }

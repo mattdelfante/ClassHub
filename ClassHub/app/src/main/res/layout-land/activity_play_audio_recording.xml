@@ -10,20 +10,20 @@
 
     <pl.droidsonroids.gif.GifImageView
         app:layout_widthPercent="100%"
-        app:layout_heightPercent="30%"
+        app:layout_heightPercent="40%"
         android:id="@+id/playbackAudioGif"
-        app:layout_marginTopPercent="20%"/>
+        app:layout_marginTopPercent="15%"/>
 
     <SeekBar
         android:id="@+id/audioRecordingSeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_marginTopPercent="75%" />
+        app:layout_marginTopPercent="65%" />
 
     <Button
         android:id="@+id/pauseContinueAudioPlayBackButton"
         app:layout_widthPercent="50%"
-        app:layout_heightPercent="15%"
+        app:layout_heightPercent="20%"
         android:text="Pause"
         android:textSize="20sp"
         app:layout_marginTopPercent="5%"
@@ -34,7 +34,7 @@
     <Button
         android:id="@+id/stopAudioPlayBackButton"
         app:layout_widthPercent="50%"
-        app:layout_heightPercent="15%"
+        app:layout_heightPercent="20%"
         android:text="Stop"
         android:textSize="20sp"
         android:textAllCaps="false"
@@ -42,5 +42,4 @@
         app:layout_marginLeftPercent="50%"
         android:onClick="stopAudioPlayBackButtonHandler"
         android:layout_below="@+id/audioRecordingSeekBar" />
-
 </android.support.percent.PercentRelativeLayout>

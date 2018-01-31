@@ -17,6 +17,9 @@ import com.delware.classhub.R;
 
 import java.io.IOException;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+
 /**
  * Overview: This class allows users to playback an audio recording with the ability for the user
  * to seek through the audio, pause the audio and stop listening to the audio.
@@ -38,6 +41,12 @@ public class PlayAudioRecordingActivity extends AppCompatActivity
 
     //true if the playback is paused, false if not.
     private boolean m_isPaused = false;
+
+    //The holder of the gif that plays when audio is being played
+    private GifImageView m_gifView;
+
+    //The gif that plays when audio is being played
+    private GifDrawable m_gifDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -61,6 +70,16 @@ public class PlayAudioRecordingActivity extends AppCompatActivity
         m_seekBar = (SeekBar) findViewById(R.id.audioRecordingSeekBar);
         m_mediaPlayer = new MediaPlayer();
         m_mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        //Handles starting the gif
+        try {
+            m_gifView = (GifImageView) findViewById(R.id.playbackAudioGif);
+            m_gifDrawable = new GifDrawable(getResources(), R.drawable.speaker);
+            m_gifDrawable.setSpeed(0.33f);
+            m_gifView.setImageDrawable(m_gifDrawable);
+        } catch (IOException e) {
+            Log.i("LOG: ", "The audio recording gif was not able to be played.");
+        }
 
         try {
             m_mediaPlayer.setDataSource(pathToAudioRecording);
@@ -91,6 +110,9 @@ public class PlayAudioRecordingActivity extends AppCompatActivity
                         Button b = (Button) findViewById(R.id.pauseContinueAudioPlayBackButton);
                         b.setText("Pause");
                         m_isPaused = false; //the audio recording will no longer be paused
+
+                        //restart the gif
+                        m_gifDrawable.start();
 
                         //gets the seek bar to the correct position
                         m_seekBar.setProgress(progress);
@@ -153,12 +175,14 @@ public class PlayAudioRecordingActivity extends AppCompatActivity
             b.setText("Pause");
             m_mediaPlayer.start();
             playCycle();
+            m_gifDrawable.start();
             m_isPaused = false;
         }
         else
         {
             b.setText("Play");
             m_mediaPlayer.pause();
+            m_gifDrawable.stop();
             m_isPaused = true;
         }
     }
@@ -189,6 +213,9 @@ public class PlayAudioRecordingActivity extends AppCompatActivity
 
         if (m_mediaPlayer != null && m_mediaPlayer.isPlaying())
         {
+            if (!m_gifDrawable.isPlaying())
+                m_gifDrawable.start();
+
             m_runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -199,5 +226,7 @@ public class PlayAudioRecordingActivity extends AppCompatActivity
             //makes it so the seek bar will update every 50 ms
             m_handler.postDelayed(m_runnable, 50);
         }
+        else if (m_mediaPlayer != null && !m_mediaPlayer.isPlaying())
+            m_gifDrawable.stop();
     }
 }

@@ -3,6 +3,8 @@ package com.delware.classhub.Activities;
 import android.content.DialogInterface;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +34,9 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+
 /**
  * Overview: This class allows users to create an audio recording
  * and associate the audio recording with a particular class
@@ -55,6 +60,27 @@ public class RecordAudioActivity extends AppCompatActivity
     //and then resumes the audio recording
     private List<String> m_audioRecordingFiles = null;
 
+    //the TextView that shows the current time of the recording
+    private TextView m_timerText = null;
+
+    //various times needed to be display the correct time on the timer text view
+    private long m_startTime = 0L;
+    private long m_timeInMs = 0L;
+    private long m_timeSwapBuff = 0L;
+    private long m_updateTime = 0L;
+
+    //handler to update the text view of the time
+    private Handler m_timeHandler = null;
+
+    //thread to update the text view of the time
+    private Runnable m_timeThread = null;
+
+    //The holder of the gif that plays when audio is being recorded
+    private GifImageView m_gifView = null;
+
+    //The gif that plays when audio is being recorded
+    private GifDrawable m_gifDrawable = null;
+
     //This needs to implement the media recorder stuff
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +100,41 @@ public class RecordAudioActivity extends AppCompatActivity
         m_isPaused = false;
         m_problemOccurred = false;
         m_audioRecordingFiles = new ArrayList<>();
+        m_timerText = (TextView) findViewById(R.id.timerValue);
+        m_timeHandler = new Handler();
 
+        //handles updating the timer text
+        m_timeThread = new Runnable() {
+            @Override
+            public void run() {
+                m_timeInMs = SystemClock.uptimeMillis() - m_startTime;
+                m_updateTime = m_timeSwapBuff + m_timeInMs;
+                int seconds = (int) (m_updateTime/1000);
+                int minutes = seconds/60;
+                seconds %= 60;
+                int milliseconds = ((int) (m_updateTime%1000)) / 10;
+
+                m_timerText.setText("" + minutes + ":" + String.format("%02d", seconds)
+                                    + ":" + String.format("%02d", milliseconds));
+                m_timeHandler.postDelayed(this, 0);
+            }
+        };
+
+        //Handles starting the gif
+        try {
+            m_gifView = (GifImageView) findViewById(R.id.recordAudioGif);
+            m_gifDrawable = new GifDrawable(getResources(), R.drawable.microphone);
+            m_gifDrawable.setSpeed(0.5f);
+            m_gifView.setImageDrawable(m_gifDrawable);
+        } catch (IOException e) {
+            Log.i("LOG: ", "The audio recording gif was not able to be played.");
+        }
+
+        //Handles starting the audio recording
         try {
             beginRecordingAudio();
+            m_startTime = SystemClock.uptimeMillis();
+            m_timeHandler.postDelayed(m_timeThread, 0);
         } catch (Exception e) {
             //couldn't create the recording, display an error message
             Toast.makeText(getApplicationContext(), "Failed to record audio.", Toast.LENGTH_SHORT).show();
@@ -92,6 +150,9 @@ public class RecordAudioActivity extends AppCompatActivity
         super.onDestroy();
 
         stopAudioRecording();
+
+        m_timeSwapBuff += m_timeInMs;
+        m_timeHandler.removeCallbacks(m_timeThread);
 
         //delete all of the audio recording files
         for (String fileName : m_audioRecordingFiles)
@@ -158,6 +219,14 @@ public class RecordAudioActivity extends AppCompatActivity
             //start another audio recording
             try{
                 beginRecordingAudio();
+
+                //restart the timer
+                m_startTime = SystemClock.uptimeMillis();
+                m_timeHandler.postDelayed(m_timeThread, 0);
+
+                //restart the gif
+                m_gifDrawable.start();
+
                 b.setText("Pause Recording");
                 m_isPaused = false;
             } catch (IOException e) {
@@ -170,6 +239,14 @@ public class RecordAudioActivity extends AppCompatActivity
         {
             //end the current audio recording
             stopAudioRecording();
+
+            //end the timer
+            m_timeSwapBuff += m_timeInMs;
+            m_timeHandler.removeCallbacks(m_timeThread);
+
+            //stop the gif
+            m_gifDrawable.stop();
+
             b.setText("Continue Recording");
             m_isPaused = true;
         }
@@ -184,6 +261,14 @@ public class RecordAudioActivity extends AppCompatActivity
     public void finishAudioRecording(View view)
     {
         stopAudioRecording();
+
+        if (!m_isPaused) {
+            //stop the timer
+            m_timeHandler.removeCallbacks(m_timeThread);
+
+            //stop the gif
+            m_gifDrawable.stop();
+        }
 
         //merge all of the m
         mergeMediaFiles(true);
