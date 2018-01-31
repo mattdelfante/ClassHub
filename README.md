@@ -14,6 +14,13 @@ ClassHub is an Android application that organizes academic class information in 
 * [ActiveAndroid](https://github.com/pardom/ActiveAndroid)<br />
 * [Android Week View](https://github.com/alamkanak/Android-Week-View)<br />
 * [Java MP4 Parser](https://github.com/sannies/mp4parser)<br />
+* [android-gif-drawable](https://github.com/koral--/android-gif-drawable) <br />
+
+<b>Installation Instructions:</b><br />
+1. Clone this Git repo. <br />
+2. Open the Class Hub project in Android Studio. <br />
+3. Connect an Android device with Android version 4.0.3 or above to your computer. <br />
+4. Run the Class Hub project in Android Studio and select the connected Android device as the deployment target. <br />
 
 <b>License:</b><br />
 
