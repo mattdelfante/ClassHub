@@ -46,5 +46,4 @@
         android:id="@+id/finishAudioRecordingButton"
         android:onClick="finishAudioRecording"
         android:textAllCaps="false" />
-
 </android.support.percent.PercentRelativeLayout>

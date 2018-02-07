@@ -194,7 +194,7 @@ public class ClassActivity extends AppCompatActivity
                         //goes back to Priority Level One
                         newAssignment.setPriorityLevel(1);
                     }
-                });
+                }).setCancelable(false);
 
                 adBuilder.show();
             }

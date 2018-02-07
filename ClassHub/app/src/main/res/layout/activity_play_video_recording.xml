@@ -9,11 +9,10 @@
     tools:context="com.delware.classhub.Activities.PlayVideoRecordingActivity">
 
     <VideoView
-    android:id="@+id/videoViewPlayBack"
-    app:layout_widthPercent="100%"
-    app:layout_heightPercent="100%"
-    android:layout_centerHorizontal="true"/>
-
+        android:id="@+id/videoViewPlayBack"
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="100%"
+        android:layout_centerHorizontal="true"/>
 </android.support.percent.PercentRelativeLayout>
 
 

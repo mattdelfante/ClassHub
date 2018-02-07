@@ -33,7 +33,7 @@
         android:id="@+id/addClassInput"
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
-        android:inputType="textCapSentences|textAutoCorrect"
+        android:inputType="textCapSentences"
         android:layout_below="@+id/enterClassNameText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -55,5 +55,4 @@
         app:layout_marginLeftPercent="50%"
         android:textAllCaps="false"
         android:layout_below="@+id/addClassInput"/>
-
 </android.support.percent.PercentRelativeLayout>

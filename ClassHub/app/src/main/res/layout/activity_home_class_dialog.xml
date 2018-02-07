@@ -33,7 +33,7 @@
         android:id="@+id/renameClassInput"
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
-        android:inputType="textCapSentences|textAutoCorrect"
+        android:inputType="textCapSentences"
         android:layout_below="@+id/renameClassText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -54,7 +54,6 @@
         android:layout_height="wrap_content"
         android:text="Delete the Class"
         android:textAllCaps="false"
-
         android:layout_below="@+id/archiveClassButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>

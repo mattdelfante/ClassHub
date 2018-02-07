@@ -186,7 +186,7 @@ public class ViewAssignmentsActivity extends AppCompatActivity
                         calendar.set(Calendar.MINUTE, selectedMinute);
 
                         //Now the assignments date is properly set
-                        m_selectedAssignment.setDueDate(calendar.getTime());
+                        //m_selectedAssignment.setDueDate(calendar.getTime());
 
                     }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
@@ -206,6 +206,9 @@ public class ViewAssignmentsActivity extends AppCompatActivity
             }
         });
 
+        //will hold the priority level that the user selects
+        final int[] priorityLevel = new int[]{m_selectedAssignment.getPriorityLevel()};
+
         //priority level logic
         editPriorityLevelButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -218,21 +221,25 @@ public class ViewAssignmentsActivity extends AppCompatActivity
                 AlertDialog.Builder adBuilder = new AlertDialog.Builder(m_activityContext);
                 adBuilder.setTitle("Select A Priority Level");
 
-                adBuilder.setSingleChoiceItems(choices, m_selectedAssignment.getPriorityLevel() - 1, new DialogInterface.OnClickListener(){
+                adBuilder.setSingleChoiceItems(choices, priorityLevel[0] - 1, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //index 0 is priority level 1, so add 1 to the index to get the correct priority level
-                        m_selectedAssignment.setPriorityLevel(which + 1);
+                        priorityLevel[0] = which + 1;
                     }
                 })
                         .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {}
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {}
-                        });
+                            public void onClick(DialogInterface dialog, int which) {
+                                priorityLevel[0] = m_selectedAssignment.getPriorityLevel();
+                            }
+                        })
+                        .setCancelable(false);
 
                 adBuilder.show();
             }
@@ -248,7 +255,7 @@ public class ViewAssignmentsActivity extends AppCompatActivity
 
                 //add the assignment to the database
                 m_selectedAssignment.save();
-                SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+
                 Toast.makeText(getApplicationContext(), "The assignment, " + m_selectedAssignment.getName() +
                         ", was marked as completed.", Toast.LENGTH_SHORT).show();
 
@@ -292,10 +299,13 @@ public class ViewAssignmentsActivity extends AppCompatActivity
                 {
                     m_selectedAssignment.setName(assignmentName);
                     m_selectedAssignment.setAdditionalNotes(additionalNotes);
+                    m_selectedAssignment.setDueDate(calendar.getTime());
+
+                    if (!m_selectedAssignment.getIsCompleted())
+                        m_selectedAssignment.setPriorityLevel(priorityLevel[0]);
 
                     //update the assignment in the database
                     m_selectedAssignment.save();
-                    SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
                     toastMsg = "The assignment: " + assignmentName + " was successfully updated.";
 
@@ -334,9 +344,6 @@ public class ViewAssignmentsActivity extends AppCompatActivity
 
                         //delete the assignment form the database
                         m_selectedAssignment.delete();
-
-                        //update the assignment calendar
-                        SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
                         //Reset the activity while making the transition seamless
                         finish();

@@ -42,5 +42,4 @@
         app:layout_marginLeftPercent="50%"
         android:onClick="stopAudioPlayBackButtonHandler"
         android:layout_below="@+id/audioRecordingSeekBar" />
-
 </android.support.percent.PercentRelativeLayout>

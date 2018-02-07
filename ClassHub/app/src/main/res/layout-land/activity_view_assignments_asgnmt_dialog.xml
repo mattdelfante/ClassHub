@@ -29,8 +29,8 @@
 
     <Button
         android:id="@+id/editDueDateButton"
-        app:layout_widthPercent="100%"
-        android:layout_height="wrap_content"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="20%"
         android:text="Edit Due Date"
         android:textAllCaps="false"
         android:layout_below="@+id/editAssignmentNameInput"
@@ -39,18 +39,19 @@
 
     <Button
         android:id="@+id/editPriorityLevelButton"
-        app:layout_widthPercent="100%"
-        android:layout_height="wrap_content"
+        app:layout_widthPercent="50%"
+        app:layout_marginLeftPercent="50%"
+        app:layout_heightPercent="20%"
         android:text="Edit Priority Level"
         android:textAllCaps="false"
-        android:layout_below="@+id/editDueDateButton"
+        android:layout_below="@+id/editAssignmentNameInput"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
     <Button
         android:id="@+id/completedAssignmentButton"
-        app:layout_widthPercent="100%"
-        android:layout_height="wrap_content"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="20%"
         android:text="Mark Assignment As Completed"
         android:textAllCaps="false"
         android:layout_below="@+id/editPriorityLevelButton"
@@ -59,19 +60,19 @@
 
     <Button
         android:id="@+id/deleteAssignmentButton"
-        app:layout_widthPercent="100%"
-        android:layout_height="wrap_content"
+        app:layout_widthPercent="50%"
+        app:layout_marginLeftPercent="50%"
+        app:layout_heightPercent="20%"
         android:text="Delete Assignment"
         android:textAllCaps="false"
-        android:layout_below="@+id/completedAssignmentButton"
+        android:layout_below="@+id/editPriorityLevelButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
-    <!--Figure out how to fix this when the device is sideways-->
     <EditText
         android:id="@+id/editAdditionalNotes"
         app:layout_widthPercent="98%"
-        app:layout_heightPercent="20%"
+        app:layout_heightPercent="22%"
         android:gravity="top|left"
         android:inputType = "textCapSentences|textMultiLine"
         android:scrollHorizontally="false"
@@ -82,7 +83,7 @@
     <Button
         android:id="@+id/viewAssingmentCancelButton"
         app:layout_widthPercent="50%"
-        android:layout_height="wrap_content"
+        app:layout_heightPercent="20%"
         android:text="Cancel"
         android:textAllCaps="false"
         android:layout_below="@+id/editAdditionalNotes"/>
@@ -90,7 +91,7 @@
     <Button
         android:id="@+id/viewAssingmentDoneButton"
         app:layout_widthPercent="50%"
-        android:layout_height="wrap_content"
+        app:layout_heightPercent="20%"
         android:text="Done"
         app:layout_marginLeftPercent="50%"
         android:textAllCaps="false"

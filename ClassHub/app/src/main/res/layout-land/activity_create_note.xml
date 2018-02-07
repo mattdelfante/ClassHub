@@ -12,7 +12,7 @@
         android:id="@+id/createNoteField"
         app:layout_widthPercent="98%"
         app:layout_marginLeftPercent="1%"
-        app:layout_heightPercent="90%"
+        app:layout_heightPercent="85%"
         android:inputType = "textCapSentences|textMultiLine"
         android:scrollHorizontally="false"
         android:gravity="top|left"

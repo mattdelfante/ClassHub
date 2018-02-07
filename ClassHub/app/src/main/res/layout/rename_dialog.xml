@@ -19,7 +19,7 @@
         android:id="@+id/renameInput"
         app:layout_widthPercent="100%"
         android:layout_height="wrap_content"
-        android:inputType="textCapSentences|textAutoCorrect"
+        android:inputType="textCapSentences"
         android:layout_below="@+id/renameTitle"
         android:textColor="@color/black"
         android:layout_alignParentLeft="true"

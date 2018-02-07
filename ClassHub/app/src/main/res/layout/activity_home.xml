@@ -10,10 +10,8 @@
 
     <com.alamkanak.weekview.WeekView
         android:id="@+id/weekView"
-
         app:layout_heightPercent="70%"
         app:layout_widthPercent="100%"
-
         app:columnGap="8dp"
         app:dayBackgroundColor="#05000000"
         app:eventTextColor="@android:color/white"
@@ -23,7 +21,6 @@
         app:headerRowBackgroundColor="#ffefefef"
         app:headerRowPadding="12dp"
         app:hourHeight="60dp"
-
         app:noOfVisibleDays="3"
         app:textSize="12sp"
         app:todayBackgroundColor="#1848adff" />
@@ -31,11 +28,9 @@
     <Button
         android:id="@+id/addClassButton"
         android:layout_width="match_parent"
-
         app:layout_marginTopPercent="70%"
         app:layout_widthPercent="100%"
         app:layout_heightPercent="8%"
-
         android:onClick="displayAddClassDialogBox"
         android:text="Add Class"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -44,7 +39,6 @@
 
     <ListView
         android:id="@+id/classesListView"
-
         app:layout_marginTopPercent="78%"
         app:layout_widthPercent="100%"
         app:layout_heightPercent="22%" />

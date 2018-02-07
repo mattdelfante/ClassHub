@@ -119,6 +119,13 @@ public class HomeActivity extends AppCompatActivity
             m_alertDialogForLongPressingAClass.dismiss();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //Refresh the assignment calender every time Home Activity is restarted
+        SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+    }
+
     /**
      * Adds a list of classes to the list view
      * @param classes the list of classes to add to the list view

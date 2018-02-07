@@ -43,6 +43,7 @@ public class ViewEditNoteActivity extends AppCompatActivity
 
         //put the note's content into the edit text
         editText.setText(selectedNote.getNote());
+        editText.setSelection(selectedNote.getNote().length());
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
