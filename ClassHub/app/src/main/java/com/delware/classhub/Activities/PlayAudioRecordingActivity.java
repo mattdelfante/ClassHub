@@ -81,6 +81,7 @@ public class PlayAudioRecordingActivity extends AppCompatActivity
             Log.i("LOG: ", "The audio recording gif was not able to be played.");
         }
 
+        //handles prepping the audio recording for playing
         try {
             m_mediaPlayer.setDataSource(pathToAudioRecording);
             m_mediaPlayer.prepare();

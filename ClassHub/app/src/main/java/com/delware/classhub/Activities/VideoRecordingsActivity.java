@@ -32,6 +32,7 @@ import java.util.Calendar;
  */
 public class VideoRecordingsActivity extends AppCompatActivity {
 
+    //A code that represents requesting to record video
     final private int REQUEST_VIDEO = 0;
 
     @Override

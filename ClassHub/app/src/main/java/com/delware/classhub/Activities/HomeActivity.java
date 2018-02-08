@@ -12,8 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,7 +29,6 @@ import com.delware.classhub.DatabaseModels.AssignmentModel;
 import com.delware.classhub.DatabaseModels.ClassModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
-import com.delware.classhub.Singletons.SingletonWeekView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,6 +49,12 @@ public class HomeActivity extends AppCompatActivity
 
     //pop up alert dialog box when you long press on a class in the list view
     private Dialog m_alertDialogForLongPressingAClass = null;
+
+    //pop up dialog box for when you long press on the add class button
+    private Dialog m_dialogForLongPressAddClassButton = null;
+
+    //the assignment calender on the home activity
+    private WeekView m_assignmentCalender = null;
 
     //allows updating the list view that holds all the classes
     private ArrayAdapter<String> m_classesListViewAdapter;
@@ -79,6 +82,10 @@ public class HomeActivity extends AppCompatActivity
         TextView actionBarTextView = (TextView) findViewById(R.id.defaultActionBarTitle);
         actionBarTextView.setText("Class Hub");
 
+        //Get a reference to the assignment calender in the layout
+        m_assignmentCalender = (WeekView) findViewById(R.id.weekView);
+
+        //will hold all of the class names of the non-archived classes
         m_classes = new ArrayList<>();
 
         //makes it so the list view has all the non archived classes from the database
@@ -90,11 +97,21 @@ public class HomeActivity extends AppCompatActivity
         //defines what happens when you click the add class button
         createAddClassOnClickDialog();
 
-        //allows the context menu to pop up when long pressing the add class button
-        registerContextMenuForAddClassButton();
+        //defines what happens when you long press the add class button
+        createAddClassLongClickDialog();
 
         //initializes the classes list view
         initializeClassListView();
+
+        //Set up the long click action of the button
+        Button addClassButton = (Button) findViewById(R.id.addClassButton);
+        addClassButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                displayAddClassLongPressDialog();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -106,6 +123,9 @@ public class HomeActivity extends AppCompatActivity
 
         if (m_alertDialogForLongPressingAClass != null)
             m_alertDialogForLongPressingAClass.dismiss();
+
+        if (m_dialogForLongPressAddClassButton != null)
+            m_dialogForLongPressAddClassButton.dismiss();
     }
 
     @Override
@@ -117,13 +137,18 @@ public class HomeActivity extends AppCompatActivity
 
         if (m_alertDialogForLongPressingAClass != null)
             m_alertDialogForLongPressingAClass.dismiss();
+
+        if (m_dialogForLongPressAddClassButton != null)
+            m_dialogForLongPressAddClassButton.dismiss();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+
         //Refresh the assignment calender every time Home Activity is restarted
-        SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+        if (m_assignmentCalender != null)
+            m_assignmentCalender.notifyDatasetChanged();
     }
 
     /**
@@ -156,14 +181,6 @@ public class HomeActivity extends AppCompatActivity
             }
         };
 
-        //action when clicking empty date in the calendar
-        WeekView.EmptyViewClickListener emptyViewClickListener = new WeekView.EmptyViewClickListener() {
-            @Override
-            public void onEmptyViewClicked(Calendar time) {
-
-            }
-        };
-
         //action that populates the calendar with homework assignments
         MonthLoader.MonthChangeListener monthChangeListener = new MonthLoader.MonthChangeListener() {
             @Override
@@ -183,22 +200,13 @@ public class HomeActivity extends AppCompatActivity
                         returnVal.add(createWeekViewEvent(a.getId(), a));
 
                 }
-
                 return returnVal;
             }
         };
 
-        // Get a reference for the week view in the layout.
-        WeekView weekView = (WeekView) findViewById(R.id.weekView);
-
-        //store the week view calendar into the singleton
-        if (SingletonWeekView.getInstance().getWeekView() == null)
-            SingletonWeekView.getInstance().setWeekView(weekView);
-
         //set the events that were defined above
-        weekView.setOnEventClickListener(eventClickListener);
-        weekView.setMonthChangeListener(monthChangeListener);
-        weekView.setEmptyViewClickListener(emptyViewClickListener);
+        m_assignmentCalender.setOnEventClickListener(eventClickListener);
+        m_assignmentCalender.setMonthChangeListener(monthChangeListener);
     }
 
     /**
@@ -221,7 +229,6 @@ public class HomeActivity extends AppCompatActivity
         switch (asgnmt.getPriorityLevel())
         {
             case 1:
-                //ResourcesCompat.getColor(getResources(), R.color.blue, null);
                 assignment.setColor(ResourcesCompat.getColor(getResources(), R.color.blue, null));
                 break;
             case 2:
@@ -239,6 +246,39 @@ public class HomeActivity extends AppCompatActivity
         }
 
         return assignment;
+    }
+
+    /**
+     * Creates a dialog box for when the user long presses the Add Class button.
+     * The dialog box will allow the user to retrieve archived classes.
+     */
+    private void createAddClassLongClickDialog()
+    {
+        final Dialog dialog = new Dialog(m_activityContext);
+        dialog.setContentView(R.layout.activity_home_add_class_long_press_dialog);
+
+        final Button retrieveArchivedClassesButton = (Button) dialog.findViewById(R.id.retrieveArchivedClassesButton);
+        final Button cancelLongPressButton = (Button) dialog.findViewById(R.id.cancelLongPressButton);
+
+        retrieveArchivedClassesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get the archived classes and update the assignment calender with it's assignments
+                getArchivedClasses();
+                m_assignmentCalender.notifyDatasetChanged();
+                Toast.makeText(getApplicationContext(), "Archived classes were retrieved" , Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        cancelLongPressButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        m_dialogForLongPressAddClassButton = dialog;
     }
 
     /**
@@ -361,59 +401,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /**
-     * Registers the add class button for a context menu
-     */
-    private void registerContextMenuForAddClassButton()
-    {
-        //below is information for the context menu on long presses
-        //access the button
-        Button addClassButton = (Button) findViewById(R.id.addClassButton);
-
-        //register for context menu
-        this.registerForContextMenu(addClassButton);
-    }
-
-    /**
-     * creates the context menu needed for the add class button
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
-        //if you long pressed on the correct thing
-        if (v.getId() == R.id.addClassButton) {
-            //then populate the context menu of that thing with the correct info
-            this.getMenuInflater().inflate(R.menu.add_class_context_menu, menu);
-        }
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
-
-    /**
-     * Defines the actions that are taken when an item from the add class
-     * context menu is selected.
-     * @param item the selected context menu item
-     * @return true when if the process succeeded
-     */
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id)
-        {
-            case R.id.retrieveArchivedClasses:
-                //get the archived classes and update weekview with it's assignments
-                getArchivedClasses();
-                SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
-                Toast.makeText(getApplicationContext(), "Archived classes were retrieved" , Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.addClassContextMenuCancelButton:
-                closeContextMenu();
-                break;
-        }
-
-        return super.onContextItemSelected(item);
-    }
-
-    /**
      * Gets the archived classes from the database, marks them as
      * non archived and then adds them to the classes list view.
      */
@@ -487,11 +474,11 @@ public class HomeActivity extends AppCompatActivity
                 m_classes.remove(index);
                 m_classesListViewAdapter.notifyDataSetChanged();
 
-
                 //archive the class in the database
                 ClassModel.makeClassArchived(className);
+
                 //update the week view calendar
-                SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+                m_assignmentCalender.notifyDatasetChanged();
 
                 //send the message
                 Toast.makeText(getApplicationContext(), className + " was archived!" , Toast.LENGTH_SHORT).show();
@@ -560,7 +547,7 @@ public class HomeActivity extends AppCompatActivity
 
                         //delete the class from the app
                         ClassModel.deleteClass(className, getApplicationContext());
-                        SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
+                        m_assignmentCalender.notifyDatasetChanged();
 
                         Toast.makeText(getApplicationContext(), "The class: " + className + " was deleted.",
                                        Toast.LENGTH_SHORT).show();
@@ -592,11 +579,16 @@ public class HomeActivity extends AppCompatActivity
     }
 
     /**
-     * Displays the dialog box when long pressing the add class button
+     * Displays the dialog box when pressing the add class button
      * @param v the view that the dialog box is displayed
      */
     public void displayAddClassDialogBox(View v)
     {
         m_dialogForAddClassButton.show();
     }
+
+    /**
+     * Displays the dialog box when long pressing the add class button.
+     */
+    private void displayAddClassLongPressDialog() {m_dialogForLongPressAddClassButton.show();}
 }

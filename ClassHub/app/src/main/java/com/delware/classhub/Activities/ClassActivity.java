@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.delware.classhub.DatabaseModels.AssignmentModel;
 import com.delware.classhub.R;
 import com.delware.classhub.Singletons.SingletonSelectedClass;
-import com.delware.classhub.Singletons.SingletonWeekView;
 
 import java.util.Calendar;
 
@@ -37,6 +36,8 @@ import java.util.Calendar;
 public class ClassActivity extends AppCompatActivity
 {
     private Context m_activityContext = this;
+
+    //the dialog box when pressing the add assignment button
     private Dialog m_addAssignmentDialog = null;
 
     @Override
@@ -252,7 +253,6 @@ public class ClassActivity extends AppCompatActivity
                 {
                     //add the assignment to the database
                     newAssignment.save();
-                    SingletonWeekView.getInstance().getWeekView().notifyDatasetChanged();
 
                     toastMsg = "The assignment: " + assignmentName + " was successfully added.";
 
@@ -308,25 +308,41 @@ public class ClassActivity extends AppCompatActivity
         m_addAssignmentDialog.show();
     }
 
+    /**
+     * Redirects to the View Assignments Activity
+     * @param v
+     */
     public void goToViewAssignmentsActivity(View v)
     {
         Intent intent = new Intent(ClassActivity.this, ViewAssignmentsActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Redirects to the Audio Recordings Activity.
+     * @param v the view that the function was invoked from.
+     */
     public void goToAudioRecordingsActivity(View v)
     {
         Intent intent = new Intent(ClassActivity.this, AudioRecordingsActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Redirects to the Video Recordings Activity.
+     * @param v the view that the function was invoked from.
+     */
     public void goToVideoRecordingsActivity(View v)
     {
         Intent intent = new Intent(ClassActivity.this, VideoRecordingsActivity.class);
         startActivity(intent);
     }
 
-    public void goToNotesActivity(View view) {
+    /**
+     * Redirects to the Video Recordings Activity.
+     * @param v the view that the function was invoked from.
+     */
+    public void goToNotesActivity(View v) {
         Intent intent = new Intent(ClassActivity.this, NotesActivity.class);
         startActivity(intent);
     }

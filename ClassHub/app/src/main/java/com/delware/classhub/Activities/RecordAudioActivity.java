@@ -340,6 +340,13 @@ public class RecordAudioActivity extends AppCompatActivity
         adb.show();
     }
 
+    /**
+     * Makes an alert dialog box and displays it prompting the user they are sure
+     * they want to delete the audio recording. If the user is sure, the audio recording
+     * is deleted. Else, nothing happens.
+     * @param f The file that contains the audio recording.
+     * @param prevAdb The previous dialog box that was displayed
+     */
     private void confirmDeletionOfAudioRecording(final File f, final AlertDialog.Builder prevAdb) {
         //simple alert dialog for confirmation
         new AlertDialog.Builder(this)
