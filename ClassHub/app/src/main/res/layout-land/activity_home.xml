@@ -27,21 +27,23 @@
 
     <Button
         android:id="@+id/addClassButton"
-        android:layout_width="match_parent"
         android:textAllCaps="false"
-        app:layout_marginLeftPercent="60%"
         app:layout_widthPercent="40%"
         app:layout_heightPercent="20%"
         android:onClick="displayAddClassDialogBox"
+        android:layout_alignParentRight="true"
         android:text="Add Class"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weekView" />
+        android:layout_toStartOf="@+id/weekView"
+        android:layout_toLeftOf="@+id/weekView"
+        android:layout_alignParentEnd="true" />
 
     <ListView
         android:id="@+id/classesListView"
-        app:layout_marginTopPercent="20%"
+        android:layout_below="@+id/addClassButton"
+        android:layout_alignParentRight="true"
         app:layout_widthPercent="40%"
         app:layout_heightPercent="80%"
-        app:layout_marginLeftPercent="60%"/>
+        android:layout_toStartOf="@+id/weekView"
+        android:layout_toLeftOf="@+id/weekView"
+        android:layout_alignParentEnd="true" />
 </android.support.percent.PercentRelativeLayout>
